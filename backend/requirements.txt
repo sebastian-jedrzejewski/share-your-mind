@@ -1,6 +1,8 @@
 asgiref==3.6.0
-Django==4.1.7
-djangorestframework==3.14.0
+Django>=3.2,<3.3
+djangorestframework<3.13.0
+djoser==2.1.0
+djangorestframework-simplejwt<5.0.0,>=4.3.0
 python-decouple==3.7
 python-dotenv==1.0.0
 pytz==2022.7.1
