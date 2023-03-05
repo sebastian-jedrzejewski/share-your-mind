@@ -1,18 +1,42 @@
-import { Input, SubmitButton } from "./FormControls";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles({
-  link: {
-    textDecoration: "none",
-    color: "#02469e",
-    "&:hover": {
-      color: "#00247c",
-    },
-  },
-});
+import { ErrorMessage, SubmitButton } from "./FormControls";
+import { useStyles } from "./useStyles";
+import { useState } from "react";
+import apiCall from "../../api/axios";
 
 const Register = () => {
   const classes = useStyles();
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+    password2: "",
+    firstName: "",
+    lastName: "",
+  });
+  const [errorField, setErrorField] = useState({
+    username: "",
+    email: "",
+    password: "",
+    password2: "",
+    tmpSuccessMessage: "",
+  });
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setUser({ ...user, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    apiCall
+      .post("/auth/users/", { ...user })
+      .then(() =>
+        setErrorField({ tmpSuccessMessage: "You created the account!" })
+      )
+      .catch((error) => setErrorField({ ...error.response.data }));
+  };
+
   return (
     <div className="container">
       <div className="row mt-5">
@@ -21,26 +45,87 @@ const Register = () => {
           <p className="text-center text-muted mb-4">
             Join our community and share knowledge with others!
           </p>
-          <form>
-            <Input type="text" placeholder="Username*" />
-            <Input type="text" placeholder="Email*" />
-            <Input type="text" placeholder="First Name" />
-            <Input type="text" placeholder="Last Name" />
-            <Input type="password" placeholder="Password*" />
-            <Input type="password" placeholder="Confirm Password*" />
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={user.username}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Username*"
+            />
+            {errorField.username && (
+              <ErrorMessage message={errorField.username} />
+            )}
+            <input
+              type="text"
+              id="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Email*"
+            />
+            {errorField.email && <ErrorMessage message={errorField.email} />}
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={user.firstName}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="First Name"
+            />
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={user.lastName}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Last Name"
+            />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Password*"
+            />
+            {errorField.password && (
+              <ErrorMessage message={errorField.password} />
+            )}
+            <input
+              type="password"
+              id="password2"
+              name="password2"
+              value={user.password2}
+              onChange={handleChange}
+              className="form-control mb-3"
+              placeholder="Confirm Password*"
+            />
+            {errorField.password2 && (
+              <ErrorMessage message={errorField.password2} />
+            )}
             <SubmitButton text="Register" />
             <p className="text-center">
               By clicking Register button you accept our{" "}
-              <a className={classes.link} href="#">
+              <a className={classes.link} href="/register">
                 terms and conditions
               </a>
             </p>
             <p className="text-center">
               Already have an account?{" "}
-              <a className={classes.link} href="#">
+              <a className={classes.link} href="/login">
                 Login
               </a>
             </p>
+            {errorField.tmpSuccessMessage && (
+              <ErrorMessage message={errorField.tmpSuccessMessage} />
+            )}
           </form>
         </div>
       </div>
