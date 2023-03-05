@@ -7,7 +7,7 @@ const useFetchUser = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchUser = useCallback(async () => {
-    if (isAuthenticated) {
+    if (isAuthenticated()) {
       setIsLoading(true);
       const response = await apiCall.get("/auth/users/me");
       setUser(response.data);
