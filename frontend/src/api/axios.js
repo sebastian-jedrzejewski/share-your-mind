@@ -2,6 +2,7 @@ import axios from "axios";
 import { AUTH_TOKEN_HEADER } from "../constants/auth_constants";
 import { performLogout, refreshToken } from "../auth/auth";
 
+// apiCall is used for requests that requires user to be logged in
 const apiCall = axios.create({
   baseURL: "http://localhost:8000/",
 });

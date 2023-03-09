@@ -1,7 +1,7 @@
 import { SubmitButton } from "./FormControls";
 import { ErrorMessage } from "./FormControls";
 import { useState } from "react";
-import apiCall from "../../api/axios";
+import axios from "axios";
 import { performAuthentication } from "../../auth/auth";
 import { useStyles } from "./useStyles";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +24,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    apiCall
+    axios
       .post("/auth/jwt/create/", { ...user })
       .then((response) => {
         performAuthentication(response);
