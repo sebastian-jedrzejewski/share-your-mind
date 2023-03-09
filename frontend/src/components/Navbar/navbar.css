@@ -1,0 +1,39 @@
+.home {
+  margin-left: 1rem;
+}
+
+a:has(button) {
+  text-decoration: none;
+}
+
+a:has(button):hover {
+  color: #4a524c;
+}
+
+.navbar-right {
+  padding-right: 5rem;
+}
+
+.login-button {
+  margin-right: 1.4rem;
+}
+
+.button-custom {
+  background-color: #eddbc7;
+  padding: 0.5rem 0.9rem;
+}
+
+.button-custom:hover {
+  background-color: #dccab6;
+  border-color: #a7727d;
+}
+
+@media (max-width: 992px) {
+  .home {
+    margin-left: 0;
+  }
+
+  .navbar-right {
+    padding-right: 0;
+  }
+}
