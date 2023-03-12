@@ -7,6 +7,12 @@ const Footer = () => {
         <p>
           Sebastian Jędrzejewski - Copyright &copy; {new Date().getFullYear()}
         </p>
+        <p>
+          Created my design at{" "}
+          <a href="https://logomakr.com/app/" target={"_blank"}>
+            LogoMakr.com/app
+          </a>
+        </p>
       </div>
     </div>
   );

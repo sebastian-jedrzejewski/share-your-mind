@@ -1,13 +1,28 @@
 #footer {
   background-color: #a7727d;
   margin-top: 2rem;
-  height: 5.5rem;
+  height: 7rem;
   color: #fff;
   font-family: Arvo, sans-serif;
   font-size: 1.5rem;
   text-align: center;
 }
 
-#footer > .container > p {
-  padding: 1.5rem 0;
+#footer > .container > p:first-child {
+  padding: 1.5rem 0 0 0;
+}
+
+#footer > .container > p:last-child {
+  padding: 0;
+  font-size: 1rem;
+  color: #fff;
+}
+
+a {
+  color: #dccab6;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #964202;
 }
