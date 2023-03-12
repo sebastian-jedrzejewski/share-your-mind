@@ -17,6 +17,9 @@ venv/
 /.pnp
 .pnp.js
 
+# static files
+staticfiles/
+
 # testing
 /coverage
 

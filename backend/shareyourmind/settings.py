@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "djoser",
     "corsheaders",
+    "ckeditor",
     "shareyourmind.users.apps.UsersConfig",
+    "shareyourmind.common.apps.CommonConfig",
+    "shareyourmind.questions.apps.QuestionsConfig",
 ]
 
 MIDDLEWARE = [
@@ -129,6 +132,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "static/"
 
 # Default primary key field type
