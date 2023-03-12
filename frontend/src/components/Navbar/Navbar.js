@@ -72,7 +72,7 @@ const Navbar = ({ user, isLoading }) => {
               </a>
             </li>
           </ul>
-          <div className="d-flex navbar-right">
+          <div className="d-flex justify-content-center navbar-right">
             <NavbarRightSide user={user} isLoading={isLoading} />
           </div>
         </div>

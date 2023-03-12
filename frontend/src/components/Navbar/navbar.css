@@ -36,4 +36,19 @@ a:has(button):hover {
   .navbar-right {
     padding-right: 0;
   }
+
+  .navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+    width: 100%;
+  }
+
+  .navbar .navbar-collapse {
+    text-align: center;
+  }
+
+  .navbar-nav > li > a {
+    border-bottom: 2px solid #dccab6;
+  }
 }
