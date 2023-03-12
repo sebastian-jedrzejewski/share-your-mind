@@ -1,0 +1,13 @@
+#footer {
+  background-color: #a7727d;
+  margin-top: 2rem;
+  height: 5.5rem;
+  color: #fff;
+  font-family: Arvo, sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+#footer > .container > p {
+  padding: 1.5rem 0;
+}
