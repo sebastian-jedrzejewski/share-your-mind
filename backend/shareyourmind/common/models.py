@@ -13,8 +13,8 @@ class Category(models.Model):
 
 
 class PublishedContentMixin(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     likes = models.PositiveIntegerField(default=0)
 
     author = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="+")

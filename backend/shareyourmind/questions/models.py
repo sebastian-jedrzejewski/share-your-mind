@@ -29,7 +29,7 @@ class Answer(PublishedContentMixin):
 
     @property
     def short_body(self):
-        if(len(self.body.__str__())) > 100:
+        if (len(self.body.__str__())) > 100:
             return self.body.__str__()[:100] + "..."
         return mark_safe(self.body.__str__())
 

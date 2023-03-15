@@ -5,20 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('questions', '0001_initial'),
+        ("questions", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='description',
+            model_name="question",
+            name="description",
             field=ckeditor.fields.RichTextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='heading',
+            model_name="question",
+            name="heading",
             field=models.TextField(max_length=200),
         ),
     ]
