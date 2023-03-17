@@ -9,7 +9,7 @@ class Question(PublishedContentMixin):
     heading = models.TextField(max_length=200)
     description = RichTextField(blank=True, null=True)
 
-    category = models.ManyToManyField("common.Category", related_name="questions")
+    categories = models.ManyToManyField("common.Category", related_name="questions")
 
     @property
     def short_heading(self):
