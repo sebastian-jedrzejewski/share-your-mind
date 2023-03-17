@@ -8,3 +8,5 @@ python-decouple==3.7
 python-dotenv==1.0.0
 pytz==2022.7.1
 sqlparse==0.4.3
+django-ckeditor==6.5.1
+django-js-asset==2.0.0

@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from shareyourmind.users.models import User
+
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
@@ -38,3 +40,9 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail("bad_token")
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email", "first_name", "last_name")
