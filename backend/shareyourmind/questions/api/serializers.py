@@ -37,7 +37,7 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
 class AnswerCreateSerializer(serializers.ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     question_id = serializers.PrimaryKeyRelatedField(
-        queryset=Question.objects.filter(categories__is_active=True), source="question"
+        queryset=Question.objects.filter(), source="question"
     )
 
     class Meta:
@@ -54,10 +54,23 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 class QuestionListSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     categories = CategorySerializer(many=True)
+    number_of_answers = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
-        fields = ("id", "author", "heading", "categories")
+        fields = (
+            "id",
+            "created_at",
+            "author",
+            "heading",
+            "short_description",
+            "likes",
+            "number_of_answers",
+            "categories",
+        )
+
+    def get_number_of_answers(self, obj):
+        return obj.answers.count()
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):

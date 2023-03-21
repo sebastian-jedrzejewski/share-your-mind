@@ -16,7 +16,7 @@ from shareyourmind.questions.models import Question, Answer
 class QuestionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsQuestionOrAnswerAuthor]
     serializer_class = QuestionDetailSerializer
-    queryset = Question.objects.filter(categories__is_active=True)
+    queryset = Question.objects.order_by("-created_at")
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
@@ -37,7 +37,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class AnswerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsQuestionOrAnswerAuthor]
     serializer_class = AnswerDetailSerializer
-    queryset = Answer.objects.filter(question__categories__is_active=True)
+    queryset = Answer.objects.order_by("-created_at")
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:

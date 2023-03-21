@@ -12,6 +12,7 @@ import { ErrorMessage } from "../forms/FormControls";
 
 const questionsSection = {
   title: "Questions",
+  link: "/questions",
   images: [question, answer, helpOthers],
   headings: [
     "Ask a Question",
@@ -23,6 +24,7 @@ const questionsSection = {
 
 const blogsSection = {
   title: "Blog Posts",
+  link: "/blog_posts",
   images: [post, learn, note],
   headings: [
     "Find an interesting Post",
@@ -34,6 +36,7 @@ const blogsSection = {
 
 const pollsSection = {
   title: "Polls",
+  link: "/polls",
   images: [poll, peopleVotes, vote],
   headings: [
     "Find an interesting Post",
@@ -72,7 +75,7 @@ const WelcomeContainer = () => {
   );
 };
 
-const ContentSection = ({ title, images, headings, hasError }) => {
+const ContentSection = ({ title, link, images, headings, hasError }) => {
   return (
     <section>
       <h1 className="section-title">{title}</h1>
@@ -103,7 +106,7 @@ const ContentSection = ({ title, images, headings, hasError }) => {
             <h2 className="content-heading">{headings[2]}</h2>
           </div>
         </div>
-        <a href="/">
+        <a href={link}>
           <button className="btn btn-default btn-lg link-button" role="link">
             {title} Section
           </button>
