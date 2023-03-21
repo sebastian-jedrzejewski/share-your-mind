@@ -37,9 +37,7 @@ a:has(button):hover {
 
 .logout:hover {
   color: #fa6f05;
-  font-size: 1.4rem;
   border: 1px solid #fa6f05;
-  margin-left: 1rem;
 }
 
 @media (max-width: 992px) {
