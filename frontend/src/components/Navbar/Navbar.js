@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { performLogout } from "../../auth/auth";
 import logo from "../../assets/logo.png";
 import "./navbar.css";
 
@@ -57,7 +58,7 @@ const Navbar = ({ user, isLoading }) => {
               </a>
             </li>
             <li className="nav-item" style={{ fontSize: "1.1rem" }}>
-              <a className="nav-link" href="/">
+              <a className="nav-link" href="/questions">
                 Questions
               </a>
             </li>
@@ -85,7 +86,19 @@ const NavbarRightSide = ({ user, isLoading }) => {
   if (isLoading) {
     return null;
   } else if (user?.username) {
-    return <h1 style={{ color: "#DCCAB6" }}>{`Hi, ${user.username}!`}</h1>;
+    return (
+      <>
+        <h1 style={{ color: "#DCCAB6" }}>{`Hi, ${user.username}!`}</h1>
+        <button
+          onClick={() => {
+            performLogout();
+          }}
+          className="btn logout"
+        >
+          Logout
+        </button>
+      </>
+    );
   } else {
     return (
       <>
