@@ -77,7 +77,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     description = serializers.SerializerMethodField()
     categories = CategorySerializer(many=True)
-    answers = AnswerListSerializer(many=True)
+    answers = AnswerDetailSerializer(many=True)
 
     class Meta:
         model = Question
