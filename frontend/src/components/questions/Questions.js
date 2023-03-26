@@ -1,9 +1,9 @@
 import "./questions.css";
-import answer from "../../assets/answer.png";
 import answer2 from "../../assets/answer2.png";
 import like from "../../assets/like.png";
 import useFetchData from "../../hooks/useFetchData";
 import { getCategoryString, getDateString } from "./utils";
+import FilterBar from "../FilterBar/FilterBar";
 
 export const Questions = () => {
   const { data, isLoading } = useFetchData("/api/v1/questions");
@@ -14,6 +14,7 @@ export const Questions = () => {
 
   return (
     <div className="container">
+      <FilterBar />
       <div className="row">
         <div className="col-md-6 offset-md-3">
           {data.map((question) => {
@@ -64,17 +65,23 @@ export const Question = ({ question }) => {
         />
       )}
       <div className="question-footer">
-        <div className="question-info">
-          <img src={like} alt="likes" width="25px" height="21px" />
-          <span>
-            <span>{likes}</span> likes
-          </span>
-        </div>
-        <div className="question-info">
-          <img src={answer2} alt="answers" width="25px" height="23px" />
-          <span>
-            <span>{number_of_answers}</span> answers
-          </span>
+        <div className="question-wrapper">
+          <div className="question-info">
+            <div>
+              <img src={like} alt="likes" width="25px" height="21px" />
+              <span>
+                <span>{likes}</span> likes
+              </span>
+            </div>
+          </div>
+          <div className="question-info">
+            <div>
+              <img src={answer2} alt="answers" width="25px" height="23px" />
+              <span>
+                <span>{number_of_answers}</span> answers
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
