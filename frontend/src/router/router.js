@@ -3,6 +3,8 @@ import HomePage from "../pages/HomePage";
 import Login from "../components/forms/Login";
 import Register from "../components/forms/Register";
 import { QuestionsPage, SingleQuestionPage } from "../pages/QuestionsPage";
+import AskQuestionPage from "../pages/AskQuestionPage";
+import GuardedComponent from "./GuardedComponent";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/questions/:id",
     element: <SingleQuestionPage />,
+  },
+  {
+    path: "/ask-question",
+    element: <GuardedComponent component={AskQuestionPage} />,
   },
 ]);
 

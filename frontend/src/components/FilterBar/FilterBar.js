@@ -1,10 +1,16 @@
-import { useEffect } from "react";
+import { isAuthenticated } from "../../auth/auth";
 import "./filterbar.css";
 
 const FilterBar = () => {
   const toggleCheck = () => {
     document.getElementById("recommended-only").checked =
       !document.getElementById("recommended-only").checked;
+  };
+
+  const checkAuthenticity = () => {
+    if (isAuthenticated()) {
+      window.location.href = "/ask-question";
+    }
   };
 
   return (
@@ -28,14 +34,13 @@ const FilterBar = () => {
         </div>
 
         <div className="col-md-3 question-btn filter-block">
-          <a href="/ask-question">
-            <div
-              className="btn btn-default link-button"
-              style={{ marginTop: "0", padding: "10px 30px" }}
-            >
-              Ask Question
-            </div>
-          </a>
+          <div
+            className="btn btn-default link-button"
+            style={{ marginTop: "0", padding: "10px 30px" }}
+            onClick={() => checkAuthenticity()}
+          >
+            Ask Question
+          </div>
         </div>
       </div>
     </div>
