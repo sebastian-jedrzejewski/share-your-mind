@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { render } from "react-dom";
 
 import "./styles/index.css";
 import "bootstrap/dist/css/bootstrap.css";
@@ -16,11 +17,17 @@ document.body.classList.add("body");
 // axios config
 axios.defaults.baseURL = "http://localhost:8000/";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
+// const root = ReactDOM.createRoot(document.getElementById("root"));
+// root.render(
+//   <React.StrictMode>
+//     <RouterProvider router={router} />
+//   </React.StrictMode>
+// );
+render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 reportWebVitals();
