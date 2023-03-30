@@ -6,6 +6,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8ead8;
+  min-height: 100vh;
+  position: relative;
 }
 
 code {

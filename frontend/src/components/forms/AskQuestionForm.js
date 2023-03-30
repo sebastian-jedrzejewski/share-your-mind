@@ -4,6 +4,7 @@ import React, { useState } from "react";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./forms.css";
+import MultiSelect from "./MulitSelect";
 import RichTextField from "./RichTextField";
 
 const AskQuestionForm = () => {
@@ -28,10 +29,20 @@ const AskQuestionForm = () => {
                 className="heading"
                 maxLength={200}
               />
-              <label htmlFor="description-content" className="form-title">
-                Description:
-              </label>
+              <label className="form-title">Description:</label>
               <RichTextField />
+              <label className="form-title">Categories:</label>
+              <MultiSelect />
+              <div className="submit-wrapper">
+                <button
+                  className="btn btn-default link-button"
+                  style={{ marginTop: "2rem", padding: "10px 30px" }}
+                  type="submit"
+                  id="ask-question-submit"
+                >
+                  Ask Question
+                </button>
+              </div>
             </form>
           </div>
         </div>

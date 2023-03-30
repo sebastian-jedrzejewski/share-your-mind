@@ -19,7 +19,7 @@ const toolbarOptions = {
     options: ["bold", "italic", "underline", "strikethrough", "monospace"],
   },
   fontSize: { options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36] },
-  list: { inDropdown: true },
+  list: { options: ["ordered", "unordered"], inDropdown: true },
   textAlign: { inDropdown: true },
   link: { inDropdown: true },
   history: { inDropdown: true },

@@ -1,3 +1,12 @@
+.submit-wrapper {
+  text-align: center;
+  width: 100%;
+}
+
+#ask-question-submit {
+  font-size: 1.4rem;
+}
+
 .ask-question-form {
   color: #964202;
 }
@@ -44,6 +53,7 @@ textarea.heading:focus {
 
 .wrapper-class {
   border: 1px solid #ccc;
+  margin-bottom: 1.5rem;
   /* color: red; */
 }
 
