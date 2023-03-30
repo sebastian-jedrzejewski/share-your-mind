@@ -1,12 +1,21 @@
 import Select from "react-select";
-
-const categories = [
-  { value: "movies", label: "Movies" },
-  { value: "football", label: "Football" },
-  { value: "sports", label: "Sports" },
-];
+import useFetchData from "../../hooks/useFetchData";
 
 const MultiSelect = () => {
+  const { data, isLoading } = useFetchData("/api/v1/categories");
+
+  const categories = [];
+  if (isLoading) {
+    return null;
+  } else {
+    let name;
+    data.map((category) => {
+      name = category?.name.charAt(0).toUpperCase() + category?.name.slice(1);
+      categories.push({ value: name, label: name });
+    });
+    console.log(categories);
+  }
+
   return (
     <Select
       isMulti
