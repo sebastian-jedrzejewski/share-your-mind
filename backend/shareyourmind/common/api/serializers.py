@@ -6,4 +6,4 @@ from shareyourmind.common.models import Category
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ("name", "is_active")
+        fields = ("id", "name", "is_active")
