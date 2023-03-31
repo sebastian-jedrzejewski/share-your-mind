@@ -1,16 +1,46 @@
 import React, { useState } from "react";
-// import { EditorState } from "draft-js";
-// import { Editor } from "react-draft-wysiwyg";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import apiCall from "../../api/axios";
 import "./forms.css";
 import MultiSelect from "./MulitSelect";
 import RichTextField from "./RichTextField";
 
 const AskQuestionForm = () => {
-  // const [editorState, setEditorState] = useState(() =>
-  //   EditorState.createEmpty()
-  // );
+  const [headingContent, setHeadingContent] = useState("");
+  const [descriptionContent, setDescriptionContent] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleHeadingChange = (e) => {
+    const value = e.target.value;
+    setHeadingContent(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let categoriesIds = [];
+    for (let i = 0; i < selectedCategories.length; i++) {
+      categoriesIds.push(selectedCategories[i]?.id);
+    }
+
+    const questionContent = {
+      heading: headingContent,
+      description: descriptionContent,
+      categories_id: categoriesIds,
+    };
+    apiCall
+      .post("/api/v1/questions/", questionContent)
+      .then(() => {
+        setIsSuccess(true);
+        // window.location.reload();
+        setHeadingContent("");
+        setDescriptionContent("");
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
 
   return (
     <>
@@ -20,7 +50,7 @@ const AskQuestionForm = () => {
             <div className="ask-header">
               <p>Please fill out the form below to ask a question.</p>
             </div>
-            <form className="question-form">
+            <form className="question-form" onSubmit={handleSubmit}>
               <label htmlFor="heading-content" className="form-title">
                 Heading:
               </label>
@@ -28,11 +58,20 @@ const AskQuestionForm = () => {
                 id="heading-content"
                 className="heading"
                 maxLength={200}
+                name="headingContent"
+                value={headingContent}
+                onChange={handleHeadingChange}
               />
               <label className="form-title">Description:</label>
-              <RichTextField />
+              <RichTextField
+                descriptionContent={descriptionContent}
+                setDescriptionContent={setDescriptionContent}
+              />
               <label className="form-title">Categories:</label>
-              <MultiSelect />
+              <MultiSelect
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+              />
               <div className="submit-wrapper">
                 <button
                   className="btn btn-default link-button"
@@ -42,6 +81,13 @@ const AskQuestionForm = () => {
                 >
                   Ask Question
                 </button>
+                {isSuccess && (
+                  <p className="question-success">
+                    Your question has been published successfully. We wish you a
+                    lot of good answers. Back to{" "}
+                    <a href="/questions">Questions Section.</a>
+                  </p>
+                )}
               </div>
             </form>
           </div>

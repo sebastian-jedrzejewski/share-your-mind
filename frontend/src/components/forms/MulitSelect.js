@@ -1,7 +1,7 @@
 import Select from "react-select";
 import useFetchData from "../../hooks/useFetchData";
 
-const MultiSelect = () => {
+const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
   const { data, isLoading } = useFetchData("/api/v1/categories");
 
   const categories = [];
@@ -11,10 +11,13 @@ const MultiSelect = () => {
     let name;
     data.map((category) => {
       name = category?.name.charAt(0).toUpperCase() + category?.name.slice(1);
-      categories.push({ value: name, label: name });
+      return categories.push({ value: name, label: name, id: category?.id });
     });
-    console.log(categories);
   }
+
+  const handleChange = (selectedOptions) => {
+    setSelectedCategories(selectedOptions);
+  };
 
   return (
     <Select
@@ -23,6 +26,7 @@ const MultiSelect = () => {
       options={categories}
       className="basic-multi-select"
       classNamePrefix="select"
+      onChange={handleChange}
     />
   );
 };

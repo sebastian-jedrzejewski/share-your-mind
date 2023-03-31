@@ -9,7 +9,11 @@ const Footer = () => {
         </p>
         <p>
           Created my design at{" "}
-          <a href="https://logomakr.com/app/" target={"_blank"}>
+          <a
+            href="https://logomakr.com/app/"
+            target={"_blank"}
+            rel={"noreferrer"}
+          >
             LogoMakr.com/app
           </a>
         </p>

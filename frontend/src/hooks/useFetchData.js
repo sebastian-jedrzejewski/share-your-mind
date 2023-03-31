@@ -10,7 +10,7 @@ const useFetchData = (url) => {
     const response = await apiCall.get(url);
     setData(response.data);
     setIsLoading(false);
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     fetchData();

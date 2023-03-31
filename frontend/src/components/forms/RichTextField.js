@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import { convertToHTML } from "draft-convert";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./forms.css";
@@ -16,7 +17,10 @@ const toolbarOptions = {
     "emoji",
   ],
   inline: {
-    options: ["bold", "italic", "underline", "strikethrough", "monospace"],
+    options: ["bold", "italic", "underline", "monospace"],
+  },
+  blockType: {
+    options: ["Normal", "H1", "H2", "H3", "H4", "H5", "H6", "Blockquote"],
   },
   fontSize: { options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36] },
   list: { options: ["ordered", "unordered"], inDropdown: true },
@@ -25,12 +29,19 @@ const toolbarOptions = {
   history: { inDropdown: true },
 };
 
-const RichTextField = () => {
+const RichTextField = ({ descriptionContent, setDescriptionContent }) => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
 
+  // useEffect(() => {
+  //   let html = convertToHTML(editorState.getCurrentContent());
+  //   setDescriptionContent(html);
+  // }, [editorState, setDescriptionContent]);
+
   const onEditorStateChange = (editorState) => {
+    let html = convertToHTML(editorState.getCurrentContent());
+    setDescriptionContent(html);
     setEditorState(editorState);
   };
 
