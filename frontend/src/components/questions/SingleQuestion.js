@@ -3,6 +3,11 @@ import { getCategoryString, getDateString } from "./utils";
 import useFetchData from "../../hooks/useFetchData";
 import "./questions.css";
 import like from "../../assets/like.png";
+import { useEffect, useState } from "react";
+import RichTextField from "../forms/RichTextField";
+import { isAuthenticated } from "../../auth/auth";
+import apiCall from "../../api/axios";
+import { ErrorMessage } from "../forms/FormControls";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
@@ -54,12 +59,16 @@ export const SingleQuestion = () => {
               />
             )}
             <div className="question-footer">
-              <div
-                className="question-info like-question"
-                title="Like the question to make it more popular"
-              >
-                <img src={like} alt="likes" width="25px" height="21px" />
-                <span>Like this question ({likes})</span>
+              <div className="question-wrapper">
+                <div
+                  className="question-info like-question"
+                  title="Like the question to make it more popular"
+                >
+                  <div>
+                    <img src={like} alt="likes" width="25px" height="21px" />
+                    <span>Like this question ({likes})</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -68,21 +77,25 @@ export const SingleQuestion = () => {
             {answers?.length} {answers?.length === 1 ? "Answer" : "Answers"}
           </p>
 
-          <div className="welcome-container question-box">
-            {answers.map((answer, index) => {
-              return (
-                <>
-                  <Answer key={answer.id} answer={answer} />
-                  {index !== answers?.length - 1 && (
-                    <>
-                      <br></br>
-                      <hr></hr>
-                    </>
-                  )}
-                </>
-              );
-            })}
-          </div>
+          {answers?.length > 0 && (
+            <div className="welcome-container question-box">
+              {answers.map((answer, index) => {
+                return (
+                  <>
+                    <Answer key={answer.id} answer={answer} />
+                    {index !== answers?.length - 1 && (
+                      <>
+                        <br></br>
+                        <hr></hr>
+                      </>
+                    )}
+                  </>
+                );
+              })}
+            </div>
+          )}
+
+          <AnswerField questionId={id} />
         </div>
       </div>
     </div>
@@ -111,14 +124,73 @@ export const Answer = ({ answer }) => {
         />
       )}
       <div className="question-footer">
-        <div
-          className="question-info like-question"
-          title="Like the answer to make it more popular"
-        >
-          <img src={like} alt="likes" width="25px" height="21px" />
-          <span>Like this answer ({likes})</span>
+        <div className="question-wrapper">
+          <div
+            className="question-info like-question"
+            title="Like the answer to make it more popular"
+          >
+            <div>
+              <img src={like} alt="likes" width="25px" height="21px" />
+              <span>Like this answer ({likes})</span>
+            </div>
+          </div>
         </div>
       </div>
+    </>
+  );
+};
+
+export const AnswerField = ({ questionId }) => {
+  const [answerContent, setAnswerContent] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({ body: "" });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isAuthenticated()) {
+      apiCall
+        .post("/api/v1/answers/", {
+          question_id: questionId,
+          body: answerContent,
+        })
+        .then(() => {
+          setIsSuccess(true);
+          setAnswerContent("");
+          setErrorMessage({ body: "" });
+        })
+        .catch((error) => {
+          setErrorMessage({ ...error.response.data });
+          console.log(error.response.data);
+        });
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <p className="answer-note">Your Answer</p>
+        <RichTextField
+          descriptionContent={answerContent}
+          setDescriptionContent={setAnswerContent}
+        />
+        {errorMessage?.body && <ErrorMessage message={errorMessage.body} />}
+        <button
+          className="btn btn-default link-button"
+          style={{ marginTop: "0", padding: "10px 30px", fontSize: "1.4rem" }}
+          type="submit"
+        >
+          Answer
+        </button>
+        {isSuccess && (
+          <p
+            className="question-success"
+            style={{ textAlign: "center", color: "#964202" }}
+          >
+            Your answer has been published successfully. To see it, reload the
+            page.
+          </p>
+        )}
+      </form>
     </>
   );
 };
