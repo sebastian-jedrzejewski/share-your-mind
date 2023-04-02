@@ -99,7 +99,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
 class QuestionCreateSerializer(serializers.ModelSerializer):
     categories_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.filter(is_active=True), source="categories", many=True
+        queryset=Category.objects.filter(is_active=True), source="categories", many=True, allow_empty=False
     )
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 

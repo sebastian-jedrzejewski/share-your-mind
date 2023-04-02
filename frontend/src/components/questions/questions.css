@@ -67,9 +67,12 @@
 }
 
 .question-info {
-  width: 28%;
+  width: 100%;
   background-color: #eddbc7;
-  display: inline-block;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  align-items: center;
   margin: 0 0.5rem;
   padding: 0.2rem;
   font-size: 1.2rem;
@@ -79,6 +82,16 @@
 
 .question-info img {
   margin-right: 5px;
+}
+
+.question-wrapper {
+  /* background-color: red; */
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  /* align-items: stretch; */
 }
 
 .like-question {
