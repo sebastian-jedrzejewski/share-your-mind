@@ -34,10 +34,11 @@ const RichTextField = ({ descriptionContent, setDescriptionContent }) => {
     EditorState.createEmpty()
   );
 
-  // useEffect(() => {
-  //   let html = convertToHTML(editorState.getCurrentContent());
-  //   setDescriptionContent(html);
-  // }, [editorState, setDescriptionContent]);
+  useEffect(() => {
+    if (descriptionContent === "") {
+      setEditorState(EditorState.createEmpty());
+    }
+  }, [descriptionContent]);
 
   const onEditorStateChange = (editorState) => {
     let html = convertToHTML(editorState.getCurrentContent());

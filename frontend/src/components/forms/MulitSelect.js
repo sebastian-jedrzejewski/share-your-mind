@@ -26,6 +26,7 @@ const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
       options={categories}
       className="basic-multi-select"
       classNamePrefix="select"
+      value={selectedCategories}
       onChange={handleChange}
     />
   );

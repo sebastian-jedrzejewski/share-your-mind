@@ -54,7 +54,6 @@ textarea.heading:focus {
 .wrapper-class {
   border: 1px solid #ccc;
   margin-bottom: 1.5rem;
-  /* color: red; */
 }
 
 .editor-class {
@@ -64,11 +63,11 @@ textarea.heading:focus {
   min-height: 150px;
   overflow: hidden;
   font-size: 18px;
+  cursor: text;
 }
 
 .toolbar-class {
   border: 1px solid #ccc;
-  /* color: red; */
 }
 
 .rdw-dropdown-selectedtext {

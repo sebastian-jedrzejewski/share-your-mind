@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import apiCall from "../../api/axios";
+import { ErrorMessage } from "./FormControls";
 import "./forms.css";
 import MultiSelect from "./MulitSelect";
 import RichTextField from "./RichTextField";
@@ -11,6 +12,10 @@ const AskQuestionForm = () => {
   const [descriptionContent, setDescriptionContent] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    heading: "",
+    categories_id: "",
+  });
 
   const handleHeadingChange = (e) => {
     const value = e.target.value;
@@ -33,12 +38,21 @@ const AskQuestionForm = () => {
       .post("/api/v1/questions/", questionContent)
       .then(() => {
         setIsSuccess(true);
-        // window.location.reload();
         setHeadingContent("");
         setDescriptionContent("");
+        setSelectedCategories([]);
+        setErrorMessage({ heading: "", categories_id: "" });
       })
       .catch((error) => {
         console.log(error.response.data);
+        setErrorMessage({ ...error.response.data });
+        if (error?.response?.data?.heading?.length > 0) {
+          document.getElementById("heading-content").style.marginBottom = "0";
+        } else {
+          document.getElementById("heading-content").style.marginBottom =
+            "1.5rem";
+        }
+        setIsSuccess(false);
       });
   };
 
@@ -52,7 +66,7 @@ const AskQuestionForm = () => {
             </div>
             <form className="question-form" onSubmit={handleSubmit}>
               <label htmlFor="heading-content" className="form-title">
-                Heading:
+                <strong>Heading:</strong>
               </label>
               <textarea
                 id="heading-content"
@@ -62,16 +76,24 @@ const AskQuestionForm = () => {
                 value={headingContent}
                 onChange={handleHeadingChange}
               />
+              {errorMessage.heading && (
+                <ErrorMessage message={errorMessage.heading} />
+              )}
               <label className="form-title">Description:</label>
               <RichTextField
                 descriptionContent={descriptionContent}
                 setDescriptionContent={setDescriptionContent}
               />
-              <label className="form-title">Categories:</label>
+              <label className="form-title">
+                <strong>Categories:</strong>
+              </label>
               <MultiSelect
                 selectedCategories={selectedCategories}
                 setSelectedCategories={setSelectedCategories}
               />
+              {errorMessage.categories_id && (
+                <ErrorMessage message={errorMessage.categories_id} />
+              )}
               <div className="submit-wrapper">
                 <button
                   className="btn btn-default link-button"
