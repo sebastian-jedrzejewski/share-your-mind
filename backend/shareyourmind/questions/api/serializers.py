@@ -37,7 +37,7 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
 class AnswerCreateSerializer(serializers.ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     question_id = serializers.PrimaryKeyRelatedField(
-        queryset=Question.objects.filter(), source="question"
+        queryset=Question.objects.filter(), source="question", allow_empty=False, allow_null=False
     )
 
     class Meta:

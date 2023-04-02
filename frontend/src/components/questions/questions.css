@@ -1,5 +1,6 @@
 .question-box {
   padding: 1.2rem;
+  margin-bottom: 2rem;
 }
 
 .author {
@@ -70,7 +71,6 @@
   width: 100%;
   background-color: #eddbc7;
   display: flex;
-  /* flex-direction: column; */
   justify-content: center;
   align-items: center;
   margin: 0 0.5rem;
@@ -85,19 +85,18 @@
 }
 
 .question-wrapper {
-  /* background-color: red; */
   width: 60%;
   margin-left: auto;
   margin-right: auto;
   display: flex;
   justify-content: center;
-  /* align-items: stretch; */
 }
 
 .like-question {
   cursor: pointer;
   font-size: 1.3rem;
-  width: 35%;
+  width: 60%;
+  padding: 10px 0;
 }
 
 .like-question:hover {
@@ -124,5 +123,9 @@
 
   .question-info {
     width: 40%;
+  }
+
+  .like-question {
+    width: 100%;
   }
 }

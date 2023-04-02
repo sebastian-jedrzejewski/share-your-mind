@@ -64,10 +64,12 @@ textarea.heading:focus {
   overflow: hidden;
   font-size: 18px;
   cursor: text;
+  color: #964202;
 }
 
 .toolbar-class {
   border: 1px solid #ccc;
+  color: #964202;
 }
 
 .rdw-dropdown-selectedtext {
