@@ -38,11 +38,7 @@ const pollsSection = {
   title: "Polls",
   link: "/polls",
   images: [poll, peopleVotes, vote],
-  headings: [
-    "Find an interesting Post",
-    "Learn new things",
-    "Write your own Post",
-  ],
+  headings: ["Create a Poll", "See how people vote", "Vote in existing Polls"],
   hasError: true,
 };
 
