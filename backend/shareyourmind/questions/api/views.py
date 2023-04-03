@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from permissions import IsQuestionOrAnswerAuthor
 from shareyourmind.questions.api.serializers import (
@@ -97,3 +98,13 @@ class AnswerViewSet(viewsets.ModelViewSet):
         answer.save(update_fields=["likes"])
         data = self.get_serializer_class()(instance=answer).data
         return Response(data=data, status=status.HTTP_200_OK)
+
+
+class UserLikedQuestionAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        liked_questions = UserLikedQuestion.objects.filter(user=user)
+        liked_questions_ids = list(liked_questions.values_list("question_id", flat=True))
+        return Response(data={"liked_questions_ids": liked_questions_ids}, status=status.HTTP_200_OK)
