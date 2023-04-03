@@ -42,3 +42,41 @@ class Answer(PublishedContentMixin):
 
     def __str__(self):
         return f"{self.author}: {self.short_body}"
+
+
+class UserLikedQuestion(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="liked_questions",
+    )
+    question = models.ForeignKey(
+        "questions.Question",
+        on_delete=models.CASCADE,
+        related_name="liked_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "question"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, question: {self.question}"
+
+
+class UserLikedAnswer(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="liked_answers",
+    )
+    answer = models.ForeignKey(
+        "questions.Answer",
+        on_delete=models.CASCADE,
+        related_name="answers_liked_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "answer"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, answer: {self.answer}"

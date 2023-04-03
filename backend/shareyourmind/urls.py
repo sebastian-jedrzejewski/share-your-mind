@@ -19,5 +19,5 @@ urlpatterns = [
     path("auth/logout/", LogoutAPIView.as_view(), name="logout"),
     path("api/v1/", include(api_router.urls)),
     path("api/v1/categories/", CategoryView.as_view(), name="category-list"),
-    path("api/v1/categories/<int:pk>/", CategoryView.as_view(), name="category-detail")
+    path("api/v1/categories/<int:pk>/", CategoryView.as_view(), name="category-detail"),
 ]
