@@ -12,7 +12,12 @@ from shareyourmind.questions.api.serializers import (
     AnswerListSerializer,
     AnswerCreateSerializer,
 )
-from shareyourmind.questions.models import Question, Answer, UserLikedQuestion, UserLikedAnswer
+from shareyourmind.questions.models import (
+    Question,
+    Answer,
+    UserLikedQuestion,
+    UserLikedAnswer,
+)
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -80,9 +85,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     def like(self, request, *args, **kwargs):
         answer = self.get_object()
         user = request.user
-        liked_answer = UserLikedAnswer.objects.filter(
-            user=user, answer=answer
-        ).first()
+        liked_answer = UserLikedAnswer.objects.filter(user=user, answer=answer).first()
         if liked_answer is not None:
             return Response(
                 data={"Error": "Cannot like the answer second time!"},

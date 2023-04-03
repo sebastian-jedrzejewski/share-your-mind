@@ -6,22 +6,43 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('questions', '0004_rename_category_question_categories'),
+        ("questions", "0004_rename_category_question_categories"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserLikedQuestion',
+            name="UserLikedQuestion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='liked_by_users', to='questions.question')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='liked_questions', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="liked_by_users",
+                        to="questions.question",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="liked_questions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'question')},
+                "unique_together": {("user", "question")},
             },
         ),
     ]
