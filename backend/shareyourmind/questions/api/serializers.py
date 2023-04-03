@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from shareyourmind.common.api.serializers import CategorySerializer
 from shareyourmind.common.models import Category
-from shareyourmind.questions.models import Question, Answer
+from shareyourmind.questions.models import Question, Answer, UserLikedQuestion
 from shareyourmind.users.api.serializers import UserSerializer
 
 
@@ -37,7 +37,10 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
 class AnswerCreateSerializer(serializers.ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     question_id = serializers.PrimaryKeyRelatedField(
-        queryset=Question.objects.filter(), source="question", allow_empty=False, allow_null=False
+        queryset=Question.objects.filter(),
+        source="question",
+        allow_empty=False,
+        allow_null=False,
     )
 
     class Meta:
@@ -99,7 +102,10 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
 class QuestionCreateSerializer(serializers.ModelSerializer):
     categories_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.filter(is_active=True), source="categories", many=True, allow_empty=False
+        queryset=Category.objects.filter(is_active=True),
+        source="categories",
+        many=True,
+        allow_empty=False,
     )
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
