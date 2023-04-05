@@ -99,7 +99,8 @@
   padding: 10px 0;
 }
 
-.like-question:hover {
+.like-question:hover,
+.liked-question {
   background-color: #facb92;
   color: #6b3b01;
 }

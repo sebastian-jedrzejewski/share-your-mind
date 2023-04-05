@@ -58,19 +58,11 @@ export const SingleQuestion = () => {
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}
-            <div className="question-footer">
-              <div className="question-wrapper">
-                <div
-                  className="question-info like-question"
-                  title="Like the question to make it more popular"
-                >
-                  <div>
-                    <img src={like} alt="likes" width="25px" height="21px" />
-                    <span>Like this question ({likes})</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ContentLikes
+              contentType={"question"}
+              initialState={likes}
+              contentId={id}
+            />
           </div>
 
           <p className="answer-note">
@@ -102,8 +94,89 @@ export const SingleQuestion = () => {
   );
 };
 
+export const ContentLikes = ({ contentType, initialState, contentId }) => {
+  const [likes, setLikes] = useState(initialState);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      apiCall.get(`/api/v1/liked_${contentType}s/`).then((response) => {
+        const ids = response?.data[`liked_${contentType}s_ids`];
+        if (ids.includes(parseInt(contentId))) {
+          document
+            ?.getElementById(`${contentType}${contentId}`)
+            .classList.add("liked-question");
+          document
+            .getElementById(`${contentType}${contentId}`)
+            ?.setAttribute(
+              "title",
+              `Click one more time to dislike the ${contentType}`
+            );
+          setIsLiked(true);
+        } else {
+          document
+            ?.getElementById(`${contentType}${contentId}`)
+            .classList.remove("liked-question");
+          document
+            ?.getElementById(`${contentType}${contentId}`)
+            .setAttribute(
+              "title",
+              `Like the ${contentType} to make it more popular`
+            );
+          setIsLiked(false);
+        }
+      });
+    }
+  }, [isLiked, contentId, contentType]);
+
+  const LikeOrDislike = () => {
+    if (isAuthenticated()) {
+      apiCall
+        .post(`/api/v1/${contentType}s/${contentId}/like/`, {})
+        .then(() => {
+          setLikes((prev) => prev + 1);
+          setIsLiked(true);
+        })
+        .catch((error) => {
+          if (!error.response.data["Error"]) {
+            console.log("Something went wrong");
+          } else {
+            apiCall
+              .post(`/api/v1/${contentType}s/${contentId}/dislike/`, {})
+              .then(() => {
+                setLikes((prev) => prev - 1);
+                setIsLiked(false);
+              });
+          }
+        });
+    }
+  };
+
+  return (
+    <div className="question-footer">
+      <div className="question-wrapper">
+        <div
+          id={`${contentType}${contentId}`}
+          className="question-info like-question"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title={`Like the ${contentType} to make it more popular`}
+          onClick={LikeOrDislike}
+        >
+          <div>
+            <img src={like} alt="likes" width="25px" height="21px" />
+            <span>
+              {`Like this ${contentType}`} ({likes})
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const Answer = ({ answer }) => {
-  const { created_at, updated_at, likes, author, body } = answer;
+  const { id, created_at, updated_at, likes, author, body } = answer;
 
   return (
     <>
@@ -123,19 +196,11 @@ export const Answer = ({ answer }) => {
           dangerouslySetInnerHTML={{ __html: body }}
         />
       )}
-      <div className="question-footer">
-        <div className="question-wrapper">
-          <div
-            className="question-info like-question"
-            title="Like the answer to make it more popular"
-          >
-            <div>
-              <img src={like} alt="likes" width="25px" height="21px" />
-              <span>Like this answer ({likes})</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ContentLikes
+        contentType={"answer"}
+        initialState={likes}
+        contentId={id}
+      />
     </>
   );
 };
