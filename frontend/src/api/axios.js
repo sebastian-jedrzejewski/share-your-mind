@@ -34,6 +34,11 @@ apiCall.interceptors.response.use(
         performLogout();
       }
       return apiCall(prevRequest);
+    } else if (
+      (error?.response?.status >= 500 && error?.response?.status < 600) ||
+      error?.response?.status == null
+    ) {
+      localStorage.setItem("somethingWentWrong", true);
     }
     return Promise.reject(error);
   }

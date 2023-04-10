@@ -8,6 +8,7 @@ import RichTextField from "../forms/RichTextField";
 import { isAuthenticated } from "../../auth/auth";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
+import LoginModal, { showLoginModal } from "../Modals/LoginModal";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
@@ -31,6 +32,7 @@ export const SingleQuestion = () => {
 
   return (
     <div className="container">
+      <LoginModal />
       <div className="row">
         <div className="col-md-8 offset-md-2">
           <div className="welcome-container question-box">
@@ -149,6 +151,8 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
               });
           }
         });
+    } else {
+      showLoginModal();
     }
   };
 
@@ -227,6 +231,8 @@ export const AnswerField = ({ questionId }) => {
           setErrorMessage({ ...error.response.data });
           console.log(error.response.data);
         });
+    } else {
+      showLoginModal();
     }
   };
 
