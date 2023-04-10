@@ -1,5 +1,6 @@
 import { isAuthenticated } from "../../auth/auth";
 import "./filterbar.css";
+import LoginModal, { showLoginModal } from "../Modals/LoginModal";
 
 const FilterBar = () => {
   const toggleCheck = () => {
@@ -10,11 +11,14 @@ const FilterBar = () => {
   const checkAuthenticity = () => {
     if (isAuthenticated()) {
       window.location.href = "/ask-question";
+    } else {
+      showLoginModal();
     }
   };
 
   return (
     <div className="filterbar">
+      <LoginModal />
       <div className="row gx-0">
         <div className="col-md-2 filter-block">Newest Questions</div>
         <div className="col-md-2 filter-block">Most Answers</div>
