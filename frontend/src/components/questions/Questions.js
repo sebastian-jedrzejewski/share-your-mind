@@ -13,7 +13,7 @@ export const Questions = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container main-content">
       <FilterBar />
       <div className="row">
         <div className="col-md-6 offset-md-3">

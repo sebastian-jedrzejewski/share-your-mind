@@ -58,7 +58,7 @@ const AskQuestionForm = () => {
 
   return (
     <>
-      <div className="container">
+      <div className="container main-content">
         <div className="row">
           <div className="col-md-8 offset-md-2 welcome-container ask-question-form">
             <div className="ask-header">

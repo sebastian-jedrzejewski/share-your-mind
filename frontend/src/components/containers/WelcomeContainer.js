@@ -44,7 +44,7 @@ const pollsSection = {
 
 const WelcomeContainer = () => {
   return (
-    <div className="container welcome-container">
+    <div className="container welcome-container main-content">
       <h1>Welcome to ShareYourMind!</h1>
       <p>
         Do you like learning new things? Do you need an answer to your question?

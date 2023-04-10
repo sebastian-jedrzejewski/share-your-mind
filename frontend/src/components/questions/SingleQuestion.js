@@ -31,7 +31,7 @@ export const SingleQuestion = () => {
   } = question;
 
   return (
-    <div className="container">
+    <div className="container main-content">
       <LoginModal />
       <div className="row">
         <div className="col-md-8 offset-md-2">
@@ -247,7 +247,11 @@ export const AnswerField = ({ questionId }) => {
         {errorMessage?.body && <ErrorMessage message={errorMessage.body} />}
         <button
           className="btn btn-default link-button"
-          style={{ marginTop: "0", padding: "10px 30px", fontSize: "1.4rem" }}
+          style={{
+            marginTop: "0",
+            padding: "10px 30px",
+            fontSize: "1.4rem",
+          }}
           type="submit"
         >
           Answer
