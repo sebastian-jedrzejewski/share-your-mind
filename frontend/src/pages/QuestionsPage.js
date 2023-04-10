@@ -3,12 +3,17 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import { Questions } from "../components/questions/Questions";
 import { SingleQuestion } from "../components/questions/SingleQuestion";
+import ErrorModal from "../components/Modals/ErrorModal";
+import useShowError from "../hooks/useShowError";
 
 export const QuestionsPage = () => {
   const { user, isLoading } = useFetchUser();
 
+  useShowError();
+
   return (
     <>
+      <ErrorModal />
       <Navbar user={user} isLoading={isLoading} />
       <Questions />
       <Footer />
@@ -19,8 +24,11 @@ export const QuestionsPage = () => {
 export const SingleQuestionPage = () => {
   const { user, isLoading } = useFetchUser();
 
+  useShowError();
+
   return (
     <>
+      <ErrorModal />
       <Navbar user={user} isLoading={isLoading} />
       <SingleQuestion />
       <Footer />
