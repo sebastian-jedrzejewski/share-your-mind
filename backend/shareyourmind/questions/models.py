@@ -3,10 +3,11 @@ from django.db import models
 from django.template.defaultfilters import striptags
 from django.utils.safestring import mark_safe
 
-from shareyourmind.common.models import PublishedContentMixin
+from shareyourmind.common.models import PublishedContentMixin, ObjectContentTypeMixin
 
 
-class Question(PublishedContentMixin):
+class Question(PublishedContentMixin, ObjectContentTypeMixin):
+    OBJECT_CONTENT_TYPE = "question"
     heading = models.TextField(max_length=200)
     description = RichTextField(blank=True, null=True)
 
@@ -23,6 +24,10 @@ class Question(PublishedContentMixin):
         if len(self.description.__str__()) > 100:
             return striptags(mark_safe(self.description[:100] + "..."))
         return striptags(mark_safe(self.description))
+
+    @property
+    def number_of_answers(self):
+        return self.answers.count()
 
     def __str__(self):
         return f"{self.author}: {self.short_heading}"
