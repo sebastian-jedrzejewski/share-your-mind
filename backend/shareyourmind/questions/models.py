@@ -8,6 +8,7 @@ from shareyourmind.common.models import PublishedContentMixin, ObjectContentType
 
 class Question(PublishedContentMixin, ObjectContentTypeMixin):
     OBJECT_CONTENT_TYPE = "question"
+
     heading = models.TextField(max_length=200)
     description = RichTextField(blank=True, null=True)
 
