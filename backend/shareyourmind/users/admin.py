@@ -60,4 +60,5 @@ class UserAdmin(admin.ModelAdmin):
                 "Dates",
                 {"fields": ("last_login", "date_joined")},
             ),
+            ("Categories", {"fields": ("favourite_categories",)}),
         )
