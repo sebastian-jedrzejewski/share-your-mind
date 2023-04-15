@@ -57,7 +57,6 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
 class QuestionListSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     categories = CategorySerializer(many=True)
-    number_of_answers = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
@@ -71,9 +70,6 @@ class QuestionListSerializer(serializers.ModelSerializer):
             "number_of_answers",
             "categories",
         )
-
-    def get_number_of_answers(self, obj):
-        return obj.answers.count()
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):

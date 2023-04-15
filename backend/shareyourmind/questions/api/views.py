@@ -122,9 +122,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     def dislike(self, request, *args, **kwargs):
         answer = self.get_object()
         user = request.user
-        liked_answer = UserLikedAnswer.objects.filter(
-            user=user, answer=answer
-        ).first()
+        liked_answer = UserLikedAnswer.objects.filter(user=user, answer=answer).first()
         if liked_answer is None:
             return Response(
                 data={"Error": "Cannot dislike the answer that has not been liked!"},
@@ -144,8 +142,12 @@ class UserLikedQuestionAPIView(APIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         liked_questions = UserLikedQuestion.objects.filter(user=user)
-        liked_questions_ids = list(liked_questions.values_list("question_id", flat=True))
-        return Response(data={"liked_questions_ids": liked_questions_ids}, status=status.HTTP_200_OK)
+        liked_questions_ids = list(
+            liked_questions.values_list("question_id", flat=True)
+        )
+        return Response(
+            data={"liked_questions_ids": liked_questions_ids}, status=status.HTTP_200_OK
+        )
 
 
 class UserLikedAnswerAPIView(APIView):
@@ -155,4 +157,6 @@ class UserLikedAnswerAPIView(APIView):
         user = request.user
         liked_answers = UserLikedAnswer.objects.filter(user=user)
         liked_answers_ids = list(liked_answers.values_list("answer_id", flat=True))
-        return Response(data={"liked_answers_ids": liked_answers_ids}, status=status.HTTP_200_OK)
+        return Response(
+            data={"liked_answers_ids": liked_answers_ids}, status=status.HTTP_200_OK
+        )

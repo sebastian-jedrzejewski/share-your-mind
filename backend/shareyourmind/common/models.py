@@ -21,3 +21,14 @@ class PublishedContentMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class ObjectContentTypeMixin(models.Model):
+    OBJECT_CONTENT_TYPE = "_"
+
+    @property
+    def object_content_type(self):
+        return self.OBJECT_CONTENT_TYPE
+
+    class Meta:
+        abstract = True
