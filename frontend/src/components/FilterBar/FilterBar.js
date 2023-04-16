@@ -3,10 +3,23 @@ import { isAuthenticated } from "../../auth/auth";
 import "./filterbar.css";
 import LoginModal, { showLoginModal } from "../Modals/LoginModal";
 
-const FilterBar = ({ searchData, setSearchData }) => {
+const FilterBar = ({
+  searchData,
+  setSearchData,
+  checkBoxChecked,
+  setCheckBoxChecked,
+}) => {
   const toggleCheck = () => {
-    document.getElementById("recommended-only").checked =
-      !document.getElementById("recommended-only").checked;
+    const recommendedCheckBox = document.getElementById("recommended-only");
+    recommendedCheckBox.checked = !recommendedCheckBox.checked;
+
+    if (recommendedCheckBox.checked) {
+      setCheckBoxChecked(true);
+      setSearchData({ ...searchData, is_recommended: true });
+    } else {
+      setCheckBoxChecked(false);
+      setSearchData({ ...searchData, is_recommended: false });
+    }
   };
 
   const checkAuthenticity = () => {
@@ -29,7 +42,19 @@ const FilterBar = ({ searchData, setSearchData }) => {
     } else if (orderBy[0] === "-answers") {
       document.getElementById("most-answers")?.classList.add("underlined");
     }
-  }, [searchData]);
+
+    if (checkBoxChecked === true) {
+      document.getElementById("recommended-only").checked = true;
+      document
+        .getElementById("recommended-only")
+        .classList.add("recommendedChecked");
+    } else {
+      document.getElementById("recommended-only").checked = false;
+      document
+        .getElementById("recommended-only")
+        .classList.remove("recommendedChecked");
+    }
+  }, [searchData, checkBoxChecked]);
 
   const changeOrder = (e) => {
     if (

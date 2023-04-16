@@ -7,12 +7,13 @@ import { getCategoryString, getDateString } from "./utils";
 import FilterBar from "../FilterBar/FilterBar";
 
 export const Questions = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [searchData, setSearchData] = useState({
     object_content_type: "question",
     order_by: ["-created_at"],
   });
+  const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
   const search = useCallback(async () => {
     setIsLoading(true);
@@ -31,7 +32,12 @@ export const Questions = () => {
 
   return (
     <div className="container main-content">
-      <FilterBar searchData={searchData} setSearchData={setSearchData} />
+      <FilterBar
+        searchData={searchData}
+        setSearchData={setSearchData}
+        checkBoxChecked={checkBoxChecked}
+        setCheckBoxChecked={setCheckBoxChecked}
+      />
       <div className="row">
         <div className="col-md-6 offset-md-3">
           {data.map((question) => {

@@ -83,6 +83,14 @@
   background-color: #fff;
 }
 
+.recommendedChecked + .toggler-slider {
+  background-color: #a7727d;
+}
+
+.recommendedChecked + .toggler-slider .toggler-knob {
+  left: calc(100% - 19px - 3px);
+}
+
 .question-btn:hover {
   border-bottom: 4px solid transparent;
   cursor: default;
