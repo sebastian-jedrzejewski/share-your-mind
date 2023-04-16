@@ -1,6 +1,5 @@
 import "./questions.css";
-import { useState, useEffect, useCallback } from "react";
-import apiCall from "../../api/axios";
+import { useState } from "react";
 import answer2 from "../../assets/answer2.png";
 import like from "../../assets/like.png";
 import { getCategoryString, getDateString } from "./utils";
@@ -9,6 +8,7 @@ import {
   NEWEST,
   QUESTION_CONTENT_TYPE,
 } from "../../constants/search_constants";
+import useSearchContent from "../../hooks/useSearchContent";
 
 export const Questions = () => {
   const defaultSearchData = {
@@ -16,21 +16,10 @@ export const Questions = () => {
     order_by: [NEWEST],
   };
 
-  const [data, setData] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
   const [searchData, setSearchData] = useState(defaultSearchData);
   const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
-  const search = useCallback(async () => {
-    setIsLoading(true);
-    const response = await apiCall.post("/api/v1/search/", { ...searchData });
-    setData(response.data);
-    setIsLoading(false);
-  }, [searchData]);
-
-  useEffect(() => {
-    search();
-  }, [searchData, search]);
+  const { data, isLoading } = useSearchContent(searchData);
 
   if (isLoading) {
     return null;
