@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Navbar = ({ user, isLoading }) => {
+const Navbar = ({ user, isLoading, activeLink }) => {
   const classes = useStyles();
 
   return (
@@ -49,7 +49,10 @@ const Navbar = ({ user, isLoading }) => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <a
-                className="nav-link active home"
+                id="home-link"
+                className={`nav-link home ${
+                  activeLink === "home-link" ? "active" : ""
+                }`}
                 style={{ fontSize: "1.1rem" }}
                 aria-current="page"
                 href="/"
@@ -58,17 +61,35 @@ const Navbar = ({ user, isLoading }) => {
               </a>
             </li>
             <li className="nav-item" style={{ fontSize: "1.1rem" }}>
-              <a className="nav-link" href="/questions">
+              <a
+                id="questions-link"
+                className={`nav-link ${
+                  activeLink === "questions-link" ? "active" : ""
+                }`}
+                href="/questions"
+              >
                 Questions
               </a>
             </li>
             <li className="nav-item" style={{ fontSize: "1.1rem" }}>
-              <a className="nav-link" href="/">
+              <a
+                id="blogs-link"
+                className={`nav-link ${
+                  activeLink === "blogs-link" ? "active" : ""
+                }`}
+                href="/"
+              >
                 Blog posts
               </a>
             </li>
             <li className="nav-item" style={{ fontSize: "1.1rem" }}>
-              <a className="nav-link" href="/">
+              <a
+                id="polls-link"
+                className={`nav-link ${
+                  activeLink === "polls-link" ? "active" : ""
+                }`}
+                href="/"
+              >
                 Polls
               </a>
             </li>

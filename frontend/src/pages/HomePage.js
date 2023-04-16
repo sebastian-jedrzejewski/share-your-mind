@@ -13,7 +13,7 @@ const HomePage = () => {
   return (
     <>
       <ErrorModal />
-      <Navbar user={user} isLoading={isLoading} />
+      <Navbar user={user} isLoading={isLoading} activeLink={"home-link"} />
       <WelcomeContainer />
       <Footer />
     </>
