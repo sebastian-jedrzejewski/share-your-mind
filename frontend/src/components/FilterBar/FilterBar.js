@@ -2,6 +2,11 @@ import { useEffect } from "react";
 import { isAuthenticated } from "../../auth/auth";
 import "./filterbar.css";
 import LoginModal, { showLoginModal } from "../Modals/LoginModal";
+import {
+  MOST_ANSWERS,
+  MOST_LIKES,
+  NEWEST,
+} from "../../constants/search_constants";
 
 const FilterBar = ({
   searchData,
@@ -35,11 +40,11 @@ const FilterBar = ({
     document
       .getElementsByClassName("filter-block")
       ?.classList?.remove("underlined");
-    if (orderBy[0] === "-created_at") {
+    if (orderBy[0] === NEWEST) {
       document.getElementById("newest")?.classList.add("underlined");
-    } else if (orderBy[0] === "-likes") {
+    } else if (orderBy[0] === MOST_LIKES) {
       document.getElementById("most-likes")?.classList.add("underlined");
-    } else if (orderBy[0] === "-answers") {
+    } else if (orderBy[0] === MOST_ANSWERS) {
       document.getElementById("most-answers")?.classList.add("underlined");
     }
 
@@ -57,21 +62,18 @@ const FilterBar = ({
   }, [searchData, checkBoxChecked]);
 
   const changeOrder = (e) => {
-    if (
-      e?.target?.id === "newest" &&
-      searchData?.order_by[0] !== "-created_at"
-    ) {
-      setSearchData({ ...searchData, order_by: ["-created_at"] });
+    if (e?.target?.id === "newest" && searchData?.order_by[0] !== NEWEST) {
+      setSearchData({ ...searchData, order_by: [NEWEST] });
     } else if (
       e?.target?.id === "most-likes" &&
-      searchData?.order_by[0] !== "-likes"
+      searchData?.order_by[0] !== MOST_LIKES
     ) {
-      setSearchData({ ...searchData, order_by: ["-likes"] });
+      setSearchData({ ...searchData, order_by: [MOST_LIKES] });
     } else if (
       e?.target?.id === "most-answers" &&
-      searchData?.order_by[0] !== "-answers"
+      searchData?.order_by[0] !== MOST_ANSWERS
     ) {
-      setSearchData({ ...searchData, order_by: ["-answers"] });
+      setSearchData({ ...searchData, order_by: [MOST_ANSWERS] });
     }
   };
 

@@ -5,14 +5,20 @@ import answer2 from "../../assets/answer2.png";
 import like from "../../assets/like.png";
 import { getCategoryString, getDateString } from "./utils";
 import FilterBar from "../FilterBar/FilterBar";
+import {
+  NEWEST,
+  QUESTION_CONTENT_TYPE,
+} from "../../constants/search_constants";
 
 export const Questions = () => {
+  const defaultSearchData = {
+    object_content_type: QUESTION_CONTENT_TYPE,
+    order_by: [NEWEST],
+  };
+
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [searchData, setSearchData] = useState({
-    object_content_type: "question",
-    order_by: ["-created_at"],
-  });
+  const [searchData, setSearchData] = useState(defaultSearchData);
   const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
   const search = useCallback(async () => {
