@@ -1,12 +1,25 @@
 import "./questions.css";
+import { useState } from "react";
 import answer2 from "../../assets/answer2.png";
 import like from "../../assets/like.png";
-import useFetchData from "../../hooks/useFetchData";
 import { getCategoryString, getDateString } from "./utils";
 import FilterBar from "../FilterBar/FilterBar";
+import {
+  NEWEST,
+  QUESTION_CONTENT_TYPE,
+} from "../../constants/search_constants";
+import useSearchContent from "../../hooks/useSearchContent";
 
 export const Questions = () => {
-  const { data, isLoading } = useFetchData("/api/v1/questions");
+  const defaultSearchData = {
+    object_content_type: QUESTION_CONTENT_TYPE,
+    order_by: [NEWEST],
+  };
+
+  const [searchData, setSearchData] = useState(defaultSearchData);
+  const [checkBoxChecked, setCheckBoxChecked] = useState(false);
+
+  const { data, isLoading } = useSearchContent(searchData);
 
   if (isLoading) {
     return null;
@@ -14,7 +27,12 @@ export const Questions = () => {
 
   return (
     <div className="container main-content">
-      <FilterBar />
+      <FilterBar
+        searchData={searchData}
+        setSearchData={setSearchData}
+        checkBoxChecked={checkBoxChecked}
+        setCheckBoxChecked={setCheckBoxChecked}
+      />
       <div className="row">
         <div className="col-md-6 offset-md-3">
           {data.map((question) => {
