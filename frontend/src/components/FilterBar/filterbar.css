@@ -14,7 +14,8 @@
   padding-bottom: 1rem;
 }
 
-.filter-block:hover {
+.filter-block:hover,
+.underlined {
   border-bottom: 4px solid #a7727d;
   cursor: pointer;
 }

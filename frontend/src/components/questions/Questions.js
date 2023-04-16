@@ -1,12 +1,29 @@
 import "./questions.css";
+import { useState, useEffect, useCallback } from "react";
+import apiCall from "../../api/axios";
 import answer2 from "../../assets/answer2.png";
 import like from "../../assets/like.png";
-import useFetchData from "../../hooks/useFetchData";
 import { getCategoryString, getDateString } from "./utils";
 import FilterBar from "../FilterBar/FilterBar";
 
 export const Questions = () => {
-  const { data, isLoading } = useFetchData("/api/v1/questions");
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchData, setSearchData] = useState({
+    object_content_type: "question",
+    order_by: ["-created_at"],
+  });
+
+  const search = useCallback(async () => {
+    setIsLoading(true);
+    const response = await apiCall.post("/api/v1/search/", { ...searchData });
+    setData(response.data);
+    setIsLoading(false);
+  }, [searchData]);
+
+  useEffect(() => {
+    search();
+  }, [searchData, search]);
 
   if (isLoading) {
     return null;
@@ -14,7 +31,7 @@ export const Questions = () => {
 
   return (
     <div className="container main-content">
-      <FilterBar />
+      <FilterBar searchData={searchData} setSearchData={setSearchData} />
       <div className="row">
         <div className="col-md-6 offset-md-3">
           {data.map((question) => {
