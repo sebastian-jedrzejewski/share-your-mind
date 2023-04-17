@@ -27,7 +27,8 @@ const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
       className="basic-multi-select"
       classNamePrefix="select"
       value={selectedCategories}
-      onChange={handleChange}
+      // onChange={handleChange}
+      placeholder={<div>Select categories</div>}
     />
   );
 };

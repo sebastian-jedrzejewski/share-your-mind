@@ -7,6 +7,7 @@ import {
   MOST_LIKES,
   NEWEST,
 } from "../../constants/search_constants";
+import MultiSelect from "../forms/MulitSelect";
 
 const FilterBar = ({
   searchData,
@@ -78,55 +79,91 @@ const FilterBar = ({
   };
 
   return (
-    <div className="filterbar">
-      <LoginModal />
-      <div className="row gx-0">
-        <div
-          id="newest"
-          className="col-md-2 filter-block"
-          onClick={changeOrder}
-        >
-          Newest Questions
-        </div>
-        <div
-          id="most-answers"
-          className="col-md-2 filter-block"
-          onClick={changeOrder}
-        >
-          Most Answers
-        </div>
-        <div
-          id="most-likes"
-          className="col-md-2 filter-block"
-          onClick={changeOrder}
-        >
-          Most Likes
-        </div>
-        <div
-          className="col-md-3 filter-block"
-          id="recommended"
-          onClick={() => toggleCheck()}
-        >
-          <label className="toggler-wrapper style-1">
-            <input type="checkbox" id="recommended-only" />
-            <div className="toggler-slider">
-              <div className="toggler-knob"></div>
-            </div>
-          </label>
-          <div className="badge">Only Recommended</div>
-        </div>
-
-        <div className="col-md-3 question-btn filter-block">
+    <>
+      <div className="filterbar">
+        <LoginModal />
+        <div className="row gx-0">
           <div
-            className="btn btn-default link-button"
-            style={{ marginTop: "0", padding: "10px 30px" }}
-            onClick={() => checkAuthenticity()}
+            id="newest"
+            className="col-md-2 filter-block"
+            onClick={changeOrder}
           >
-            Ask Question
+            Newest Questions
+          </div>
+          <div
+            id="most-answers"
+            className="col-md-2 filter-block"
+            onClick={changeOrder}
+          >
+            Most Answers
+          </div>
+          <div
+            id="most-likes"
+            className="col-md-2 filter-block"
+            onClick={changeOrder}
+          >
+            Most Likes
+          </div>
+          <div
+            className="col-md-3 filter-block"
+            id="recommended"
+            onClick={() => toggleCheck()}
+          >
+            <label className="toggler-wrapper style-1">
+              <input type="checkbox" id="recommended-only" />
+              <div className="toggler-slider">
+                <div className="toggler-knob"></div>
+              </div>
+            </label>
+            <div className="badge">Only Recommended</div>
+          </div>
+
+          <div className="col-md-3 question-btn filter-block">
+            <div
+              className="btn btn-default link-button"
+              style={{ marginTop: "0", padding: "10px 30px" }}
+              onClick={() => checkAuthenticity()}
+            >
+              Ask Question
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <div
+        className="search-form col-md-10 offset-md-1 mt-4"
+        // style={{ backgroundColor: "red" }}
+      >
+        <div className="row gx-0">
+          <div className="col-md-5">
+            <input
+              type="text"
+              id="search"
+              name="search"
+              className="form-control mb-3 search-control"
+              placeholder="Search"
+            />
+          </div>
+          <div className="col-md-5">
+            <MultiSelect />
+          </div>
+          <div className="col-md-2">
+            <button
+              className="btn btn-primary search-button"
+              style={{
+                width: "100%",
+                height: "45px",
+                color: "#fff",
+                marginLeft: "5px",
+              }}
+              type="submit"
+              id="ask-question-submit"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
