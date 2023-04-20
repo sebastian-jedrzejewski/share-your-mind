@@ -129,10 +129,7 @@ const FilterBar = ({
           </div>
         </div>
       </div>
-      <div
-        className="search-form col-md-10 offset-md-1 mt-4"
-        // style={{ backgroundColor: "red" }}
-      >
+      <div className="search-form col-md-10 offset-md-1 mt-4">
         <div className="row gx-0">
           <div className="col-md-5">
             <input
@@ -143,20 +140,18 @@ const FilterBar = ({
               placeholder="Search"
             />
           </div>
-          <div className="col-md-5">
+          <div className="col-md-5" style={{ color: "#964202" }}>
             <MultiSelect />
           </div>
           <div className="col-md-2">
             <button
-              className="btn btn-primary search-button"
+              className="btn btn-warning search-button"
               style={{
                 width: "100%",
                 height: "45px",
                 color: "#fff",
-                marginLeft: "5px",
               }}
               type="submit"
-              id="ask-question-submit"
             >
               Search
             </button>
