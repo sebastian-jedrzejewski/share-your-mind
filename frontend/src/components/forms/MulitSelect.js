@@ -20,10 +20,6 @@ const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
   }
 
   const handleChange = (selectedOptions) => {
-    // const newSelectedOptions = selectedOptions.map((option) =>
-    //   option.toLowerCase()
-    // );
-    // console.log(selectedOptions[0]);
     setSelectedCategories(selectedOptions);
   };
 

@@ -17,7 +17,6 @@ export const Questions = () => {
   };
 
   const [searchData, setSearchData] = useState(defaultSearchData);
-  // const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
   const [searchFormState, setSearchFormState] = useState({
     checkBoxChecked: false,
