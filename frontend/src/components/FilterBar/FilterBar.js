@@ -12,18 +12,18 @@ import MultiSelect from "../forms/MulitSelect";
 const FilterBar = ({
   searchData,
   setSearchData,
-  checkBoxChecked,
-  setCheckBoxChecked,
+  searchFormState,
+  setSearchFormState,
 }) => {
   const toggleCheck = () => {
     const recommendedCheckBox = document.getElementById("recommended-only");
     recommendedCheckBox.checked = !recommendedCheckBox.checked;
 
     if (recommendedCheckBox.checked) {
-      setCheckBoxChecked(true);
+      setSearchFormState({ ...searchFormState, checkBoxChecked: true });
       setSearchData({ ...searchData, is_recommended: true });
     } else {
-      setCheckBoxChecked(false);
+      setSearchFormState({ ...searchFormState, checkBoxChecked: false });
       setSearchData({ ...searchData, is_recommended: false });
     }
   };
@@ -49,7 +49,7 @@ const FilterBar = ({
       document.getElementById("most-answers")?.classList.add("underlined");
     }
 
-    if (checkBoxChecked === true) {
+    if (searchFormState.checkBoxChecked === true) {
       document.getElementById("recommended-only").checked = true;
       document
         .getElementById("recommended-only")
@@ -60,7 +60,7 @@ const FilterBar = ({
         .getElementById("recommended-only")
         .classList.remove("recommendedChecked");
     }
-  }, [searchData, checkBoxChecked]);
+  }, [searchData, searchFormState.checkBoxChecked]);
 
   const changeOrder = (e) => {
     if (e?.target?.id === "newest" && searchData?.order_by[0] !== NEWEST) {
@@ -76,6 +76,44 @@ const FilterBar = ({
     ) {
       setSearchData({ ...searchData, order_by: [MOST_ANSWERS] });
     }
+  };
+
+  const handleQueryChange = (e) => {
+    setSearchFormState({ ...searchFormState, query: e.target.value });
+  };
+
+  const setSelectedCategories = (selectedCategories) => {
+    setSearchFormState({
+      ...searchFormState,
+      selectedCategories: selectedCategories,
+    });
+  };
+
+  const onSearchSubmit = (e) => {
+    e.preventDefault();
+    let query = searchFormState.query;
+    const selectedCategories = searchFormState.selectedCategories;
+
+    if (query === "") {
+      query = undefined;
+    }
+
+    let selectedCategoriesNames = [];
+    for (let i = 0; i < selectedCategories.length; i++) {
+      selectedCategoriesNames.push(selectedCategories[i]?.value);
+    }
+
+    if (selectedCategoriesNames.length == 0) {
+      selectedCategoriesNames = undefined;
+    }
+
+    console.log(query);
+    console.log(selectedCategoriesNames);
+    setSearchData({
+      ...searchData,
+      query: query,
+      category: selectedCategoriesNames,
+    });
   };
 
   return (
@@ -130,33 +168,40 @@ const FilterBar = ({
         </div>
       </div>
       <div className="search-form col-md-10 offset-md-1 mt-4">
-        <div className="row gx-0">
-          <div className="col-md-5">
-            <input
-              type="text"
-              id="search"
-              name="search"
-              className="form-control mb-3 search-control"
-              placeholder="Search"
-            />
+        <form onSubmit={onSearchSubmit}>
+          <div className="row gx-0">
+            <div className="col-md-5">
+              <input
+                type="text"
+                id="search"
+                name="search"
+                value={searchFormState.query}
+                onChange={handleQueryChange}
+                className="form-control mb-3 search-control"
+                placeholder="Search"
+              />
+            </div>
+            <div className="col-md-5" style={{ color: "#964202" }}>
+              <MultiSelect
+                selectedCategories={searchFormState.selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+              />
+            </div>
+            <div className="col-md-2">
+              <button
+                className="btn btn-warning search-button"
+                style={{
+                  width: "100%",
+                  height: "45px",
+                  color: "#fff",
+                }}
+                type="submit"
+              >
+                Search
+              </button>
+            </div>
           </div>
-          <div className="col-md-5" style={{ color: "#964202" }}>
-            <MultiSelect />
-          </div>
-          <div className="col-md-2">
-            <button
-              className="btn btn-warning search-button"
-              style={{
-                width: "100%",
-                height: "45px",
-                color: "#fff",
-              }}
-              type="submit"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        </form>
       </div>
     </>
   );

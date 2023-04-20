@@ -10,7 +10,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=100, null=True, blank=True)
 
     favourite_categories = models.ManyToManyField(
-        "common.Category", related_name="+", blank=True, null=True
+        "common.Category", related_name="+", blank=True
     )
 
     USERNAME_FIELD = "email"

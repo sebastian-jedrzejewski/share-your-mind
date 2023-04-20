@@ -11,11 +11,19 @@ const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
     let name;
     data.map((category) => {
       name = category?.name.charAt(0).toUpperCase() + category?.name.slice(1);
-      return categories.push({ value: name, label: name, id: category?.id });
+      return categories.push({
+        value: category?.name,
+        label: name,
+        id: category?.id,
+      });
     });
   }
 
   const handleChange = (selectedOptions) => {
+    // const newSelectedOptions = selectedOptions.map((option) =>
+    //   option.toLowerCase()
+    // );
+    // console.log(selectedOptions[0]);
     setSelectedCategories(selectedOptions);
   };
 

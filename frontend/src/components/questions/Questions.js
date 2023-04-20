@@ -17,7 +17,13 @@ export const Questions = () => {
   };
 
   const [searchData, setSearchData] = useState(defaultSearchData);
-  const [checkBoxChecked, setCheckBoxChecked] = useState(false);
+  // const [checkBoxChecked, setCheckBoxChecked] = useState(false);
+
+  const [searchFormState, setSearchFormState] = useState({
+    checkBoxChecked: false,
+    query: "",
+    selectedCategories: [],
+  });
 
   const { data, isLoading } = useSearchContent(searchData);
 
@@ -30,8 +36,8 @@ export const Questions = () => {
       <FilterBar
         searchData={searchData}
         setSearchData={setSearchData}
-        checkBoxChecked={checkBoxChecked}
-        setCheckBoxChecked={setCheckBoxChecked}
+        searchFormState={searchFormState}
+        setSearchFormState={setSearchFormState}
       />
       <div className="row">
         <div className="col-md-6 offset-md-3">
