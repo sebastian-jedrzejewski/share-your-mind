@@ -11,7 +11,11 @@ const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
     let name;
     data.map((category) => {
       name = category?.name.charAt(0).toUpperCase() + category?.name.slice(1);
-      return categories.push({ value: name, label: name, id: category?.id });
+      return categories.push({
+        value: category?.name,
+        label: name,
+        id: category?.id,
+      });
     });
   }
 
@@ -28,6 +32,7 @@ const MultiSelect = ({ selectedCategories, setSelectedCategories }) => {
       classNamePrefix="select"
       value={selectedCategories}
       onChange={handleChange}
+      placeholder={<div>Select categories</div>}
     />
   );
 };

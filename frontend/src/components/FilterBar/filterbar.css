@@ -100,6 +100,19 @@
   background-color: #a7727d;
 }
 
+.search-control {
+  height: 45px;
+}
+
+.select__value-container {
+  height: 45px;
+}
+
+.search-button {
+  font-size: 1.4rem;
+  margin-left: 5px;
+}
+
 @media (max-width: 1200px) {
   .badge {
     font-size: 1rem;
@@ -123,5 +136,10 @@
 
   .question-btn {
     margin-top: 1rem;
+  }
+
+  .search-button {
+    margin-top: 1rem;
+    margin-left: 0;
   }
 }
