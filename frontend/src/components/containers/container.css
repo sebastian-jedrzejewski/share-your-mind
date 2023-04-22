@@ -46,7 +46,8 @@
   letter-spacing: 1.3px;
 }
 
-a:has(button):hover .link-button {
+a:has(button):hover .link-button,
+.link-button:hover {
   border-color: #964202;
   color: #964202;
 }

@@ -44,7 +44,6 @@ const AskQuestionForm = () => {
         setErrorMessage({ heading: "", categories_id: "" });
       })
       .catch((error) => {
-        console.log(error.response.data);
         setErrorMessage({ ...error.response.data });
         if (error?.response?.data?.heading?.length > 0) {
           document.getElementById("heading-content").style.marginBottom = "0";
@@ -60,11 +59,14 @@ const AskQuestionForm = () => {
     <>
       <div className="container main-content">
         <div className="row">
-          <div className="col-md-8 offset-md-2 welcome-container ask-question-form">
+          <div
+            className="col-md-8 offset-md-2 welcome-container"
+            style={{ color: "#964202" }}
+          >
             <div className="ask-header">
               <p>Please fill out the form below to ask a question.</p>
             </div>
-            <form className="question-form" onSubmit={handleSubmit}>
+            <form className="default-form" onSubmit={handleSubmit}>
               <label htmlFor="heading-content" className="form-title">
                 <strong>Heading:</strong>
               </label>
@@ -104,7 +106,7 @@ const AskQuestionForm = () => {
                   Ask Question
                 </button>
                 {isSuccess && (
-                  <p className="question-success">
+                  <p className="message-success text-center mt-3">
                     Your question has been published successfully. We wish you a
                     lot of good answers. Back to{" "}
                     <a href="/questions">Questions Section.</a>

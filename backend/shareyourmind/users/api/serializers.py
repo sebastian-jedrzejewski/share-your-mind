@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from shareyourmind.common.api.serializers import CategorySerializer
 from shareyourmind.common.models import Category
 from shareyourmind.users.models import User
 
@@ -28,9 +29,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CurrentUserSerializer(UserSerializer):
-    favourite_categories_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.filter(is_active=True),
-        source="favourite_categories",
+    favourite_categories = CategorySerializer(
         many=True,
     )
 
@@ -38,14 +37,21 @@ class CurrentUserSerializer(UserSerializer):
         fields = UserSerializer.Meta.fields + (
             "first_name",
             "last_name",
-            "favourite_categories_id"
+            "favourite_categories",
         )
 
     def update(self, instance, validated_data):
-        favourite_categories_id = validated_data.pop("favourite_categories_id", None)
-        if favourite_categories_id:
+        favourite_categories = validated_data.pop("favourite_categories", None)
+        if favourite_categories is not None:
+            favourite_categories_id = [category["id"] for category in favourite_categories]
             instance.favourite_categories.set(favourite_categories_id)
         return super().update(instance, validated_data)
+
+    def validate_favourite_categories(self, categories):
+        for category in categories:
+            if not category.get("id", None):
+                raise serializers.ValidationError("Each category data must have contain id")
+        return categories
 
 
 class LogoutSerializer(serializers.Serializer):

@@ -8,6 +8,10 @@ import {
   NEWEST,
 } from "../../constants/search_constants";
 import MultiSelect from "../forms/MulitSelect";
+import RecommendedModal, {
+  showRecommendedModal,
+} from "../Modals/RecommendedModal";
+import useFetchUser from "../../hooks/useFetchUser";
 
 const FilterBar = ({
   searchData,
@@ -15,16 +19,32 @@ const FilterBar = ({
   searchFormState,
   setSearchFormState,
 }) => {
+  const { user } = useFetchUser();
+
   const toggleCheck = () => {
     const recommendedCheckBox = document.getElementById("recommended-only");
-    recommendedCheckBox.checked = !recommendedCheckBox.checked;
 
-    if (recommendedCheckBox.checked) {
-      setSearchFormState({ ...searchFormState, checkBoxChecked: true });
-      setSearchData({ ...searchData, is_recommended: true });
+    if (!isAuthenticated()) {
+      setSearchData({ ...searchData, is_recommended: undefined });
+      recommendedCheckBox.checked = false;
+      showLoginModal();
+      return;
+    }
+
+    const favouriteCategories = user?.favourite_categories;
+
+    if (favouriteCategories.length === 0 && !recommendedCheckBox.checked) {
+      showRecommendedModal();
     } else {
-      setSearchFormState({ ...searchFormState, checkBoxChecked: false });
-      setSearchData({ ...searchData, is_recommended: false });
+      recommendedCheckBox.checked = !recommendedCheckBox.checked;
+
+      if (recommendedCheckBox.checked) {
+        setSearchFormState({ ...searchFormState, checkBoxChecked: true });
+        setSearchData({ ...searchData, is_recommended: true });
+      } else {
+        setSearchFormState({ ...searchFormState, checkBoxChecked: false });
+        setSearchData({ ...searchData, is_recommended: false });
+      }
     }
   };
 
@@ -107,8 +127,6 @@ const FilterBar = ({
       selectedCategoriesNames = undefined;
     }
 
-    console.log(query);
-    console.log(selectedCategoriesNames);
     setSearchData({
       ...searchData,
       query: query,
@@ -120,6 +138,7 @@ const FilterBar = ({
     <>
       <div className="filterbar">
         <LoginModal />
+        <RecommendedModal />
         <div className="row gx-0">
           <div
             id="newest"

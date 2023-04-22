@@ -1,18 +1,15 @@
 import { Modal } from "bootstrap";
 
-export const showLoginModal = () => {
-  const myModal = new Modal(document.getElementById("loginModal"));
-  myModal._element.addEventListener("hidden.bs.modal", () => {
-    myModal.hide();
-  });
+export const showRecommendedModal = () => {
+  const myModal = new Modal(document.getElementById("recommendedModal"));
   myModal.show();
 };
 
-const LoginModal = () => {
+const RecommendedModal = () => {
   return (
     <div
       className="modal fade"
-      id="loginModal"
+      id="recommendedModal"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -21,7 +18,7 @@ const LoginModal = () => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              Login required
+              Add favourite categories
             </h5>
             <button
               type="button"
@@ -31,7 +28,9 @@ const LoginModal = () => {
             ></button>
           </div>
           <div className="modal-body">
-            To get into here you have to <a href="/login">login</a>.
+            To see the effect of this action, go to{" "}
+            <a href="/edit-profile">edit profile</a> page and add you favourite
+            categories so that we know which content might appeal to you.
           </div>
           <div className="modal-footer">
             <button
@@ -49,4 +48,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default RecommendedModal;
