@@ -7,10 +7,6 @@
   font-size: 1.4rem;
 }
 
-.ask-question-form {
-  color: #964202;
-}
-
 .ask-header {
   padding: 1rem;
 }
@@ -22,9 +18,13 @@
   letter-spacing: 2px;
 }
 
-.question-form {
+.default-form {
   text-align: left;
   margin-top: 1rem;
+}
+
+.default-form p {
+  margin: 0;
 }
 
 .form-title {

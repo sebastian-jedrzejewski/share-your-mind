@@ -60,11 +60,14 @@ const AskQuestionForm = () => {
     <>
       <div className="container main-content">
         <div className="row">
-          <div className="col-md-8 offset-md-2 welcome-container ask-question-form">
+          <div
+            className="col-md-8 offset-md-2 welcome-container"
+            style={{ color: "#964202" }}
+          >
             <div className="ask-header">
               <p>Please fill out the form below to ask a question.</p>
             </div>
-            <form className="question-form" onSubmit={handleSubmit}>
+            <form className="default-form" onSubmit={handleSubmit}>
               <label htmlFor="heading-content" className="form-title">
                 <strong>Heading:</strong>
               </label>
