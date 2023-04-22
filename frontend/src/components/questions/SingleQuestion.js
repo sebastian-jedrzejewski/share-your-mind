@@ -258,7 +258,7 @@ export const AnswerField = ({ questionId }) => {
         </button>
         {isSuccess && (
           <p
-            className="question-success"
+            className="message-success mt-3"
             style={{ textAlign: "center", color: "#964202" }}
           >
             Your answer has been published successfully. To see it, reload the

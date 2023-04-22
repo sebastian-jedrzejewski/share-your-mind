@@ -44,7 +44,6 @@ const AskQuestionForm = () => {
         setErrorMessage({ heading: "", categories_id: "" });
       })
       .catch((error) => {
-        console.log(error.response.data);
         setErrorMessage({ ...error.response.data });
         if (error?.response?.data?.heading?.length > 0) {
           document.getElementById("heading-content").style.marginBottom = "0";
@@ -107,7 +106,7 @@ const AskQuestionForm = () => {
                   Ask Question
                 </button>
                 {isSuccess && (
-                  <p className="question-success">
+                  <p className="message-success text-center mt-3">
                     Your question has been published successfully. We wish you a
                     lot of good answers. Back to{" "}
                     <a href="/questions">Questions Section.</a>

@@ -76,16 +76,16 @@ textarea.heading:focus {
   color: #964202;
 }
 
-.question-success {
+.message-success {
   font-size: 1.5rem;
   margin-top: 1rem;
   text-align: justify;
 }
 
-.question-success a {
+.message-success a {
   color: #a7727d;
 }
 
-.question-success a:hover {
+.message-success a:hover {
   color: #a4404a;
 }

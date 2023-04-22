@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MultiSelect from "../forms/MulitSelect";
 import useFetchUser from "../../hooks/useFetchUser";
 import apiCall from "../../api/axios";
+import { ErrorMessage } from "../forms/FormControls";
 
 const Profile = () => {
   const { user, isLoading } = useFetchUser();
@@ -11,6 +12,11 @@ const Profile = () => {
     lastName: "",
     favouriteCategories: "",
   });
+  const [errorField, setErrorField] = useState({
+    username: "",
+    favourite_categories: "",
+  });
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     let categories = [];
@@ -65,7 +71,17 @@ const Profile = () => {
 
     apiCall
       .patch("/auth/users/me/", editData)
-      .catch((error) => console.log(error.response.data));
+      .then(() => {
+        setIsSuccess(true);
+        setErrorField({
+          username: "",
+          favourite_categories: "",
+        });
+      })
+      .catch((error) => {
+        setErrorField({ ...error.response.data });
+        setIsSuccess(false);
+      });
   };
 
   return (
@@ -91,6 +107,12 @@ const Profile = () => {
               className="form-control default-input mb-3"
               style={{ color: "#964202", fontSize: "1.3rem" }}
             />
+            {errorField.username && (
+              <>
+                <ErrorMessage message={errorField.username} />
+                <br />
+              </>
+            )}
 
             <label htmlFor="first-name" className="form-title">
               <p>First name:</p>
@@ -125,6 +147,12 @@ const Profile = () => {
               selectedCategories={profileData?.favouriteCategories}
               setSelectedCategories={setSelectedCategories}
             />
+            {errorField.favourite_categories && (
+              <>
+                <ErrorMessage message={errorField.favourite_categories} />
+                <br />
+              </>
+            )}
 
             <div className="submit-wrapper">
               <button
@@ -138,6 +166,11 @@ const Profile = () => {
               >
                 Save changes
               </button>
+              {isSuccess && (
+                <p className="message-success text-center mt-3">
+                  Your profile has been updated successfully.
+                </p>
+              )}
             </div>
           </form>
         </div>
