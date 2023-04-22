@@ -1,13 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MultiSelect from "../forms/MulitSelect";
+import useFetchUser from "../../hooks/useFetchUser";
 
 const Profile = () => {
+  const { user, isLoading } = useFetchUser();
   const [profileData, setProfileData] = useState({
     username: "",
     firstName: "",
     lastName: "",
     favouriteCategories: "",
   });
+
+  useEffect(() => {
+    let categories = [];
+    let name;
+    user?.favourite_categories.map((category) => {
+      name = category?.name.charAt(0).toUpperCase() + category?.name.slice(1);
+      return categories.push({
+        value: category?.name,
+        label: name,
+        id: category?.id,
+      });
+    });
+
+    setProfileData({
+      username: user?.username,
+      firstName: user?.first_name,
+      lastName: user?.last_name,
+      favouriteCategories: categories,
+    });
+  }, [user]);
+
+  if (isLoading) {
+    return null;
+  }
+
+  const setSelectedCategories = (selectedCategories) => {
+    setProfileData({ ...profileData, favouriteCategories: selectedCategories });
+  };
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setProfileData({ ...profileData, [name]: value });
+  };
 
   return (
     <div className="container main-content">
@@ -27,9 +63,10 @@ const Profile = () => {
               type="text"
               id="username"
               name="username"
-              //   value={user.email}
-              //   onChange={handleChange}
-              className="form-control mb-3"
+              value={profileData?.username}
+              onChange={handleChange}
+              className="form-control default-input mb-3"
+              style={{ color: "#964202", fontSize: "1.3rem" }}
             />
 
             <label htmlFor="first-name" className="form-title">
@@ -38,10 +75,11 @@ const Profile = () => {
             <input
               type="text"
               id="first-name"
-              name="first-name"
-              //   value={user.email}
-              //   onChange={handleChange}
+              name="firstName"
+              value={profileData?.firstName}
+              onChange={handleChange}
               className="form-control mb-3"
+              style={{ color: "#964202", fontSize: "1.3rem" }}
             />
 
             <label htmlFor="last-name" className="form-title">
@@ -50,16 +88,20 @@ const Profile = () => {
             <input
               type="text"
               id="last-name"
-              name="last-name"
-              //   value={user.email}
-              //   onChange={handleChange}
+              name="lastName"
+              value={profileData?.lastName}
+              onChange={handleChange}
               className="form-control mb-3"
+              style={{ color: "#964202", fontSize: "1.3rem" }}
             />
 
             <label className="form-title">
               <p>Favourite categories:</p>
             </label>
-            <MultiSelect />
+            <MultiSelect
+              selectedCategories={profileData?.favouriteCategories}
+              setSelectedCategories={setSelectedCategories}
+            />
 
             <div className="submit-wrapper">
               <button
