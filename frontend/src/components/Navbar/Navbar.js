@@ -3,6 +3,8 @@ import { performLogout } from "../../auth/auth";
 import logo from "../../assets/logo.png";
 import "./navbar.css";
 
+import NavDropdown from "react-bootstrap/NavDropdown";
+
 const useStyles = makeStyles({
   navbarCustom: {
     backgroundColor: "#A7727D",
@@ -109,15 +111,21 @@ const NavbarRightSide = ({ user, isLoading }) => {
   } else if (user?.username) {
     return (
       <>
-        <h1 style={{ color: "#DCCAB6" }}>{`Hi, ${user.username}!`}</h1>
-        <button
-          onClick={() => {
-            performLogout();
-          }}
-          className="btn logout"
+        <NavDropdown
+          style={{ color: "#DCCAB6", fontSize: "1.5rem" }}
+          title={`Hi, ${user.username}!`}
+          id="basic-nav-dropdown"
         >
-          Logout
-        </button>
+          <NavDropdown.Item href="/edit-profile">Edit profile</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item
+            onClick={() => {
+              performLogout();
+            }}
+          >
+            Sign out
+          </NavDropdown.Item>
+        </NavDropdown>
       </>
     );
   } else {
