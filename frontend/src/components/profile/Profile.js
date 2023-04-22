@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import MultiSelect from "../forms/MulitSelect";
 import useFetchUser from "../../hooks/useFetchUser";
+import apiCall from "../../api/axios";
 
 const Profile = () => {
   const { user, isLoading } = useFetchUser();
@@ -45,6 +46,28 @@ const Profile = () => {
     setProfileData({ ...profileData, [name]: value });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    let categoriesIds = [];
+    for (let i = 0; i < profileData?.favouriteCategories.length; i++) {
+      categoriesIds.push({
+        id: parseInt(profileData?.favouriteCategories[i].id),
+      });
+    }
+
+    const editData = {
+      username: profileData?.username,
+      first_name: profileData?.firstName,
+      last_name: profileData?.lastName,
+      favourite_categories: categoriesIds,
+    };
+
+    apiCall
+      .patch("/auth/users/me/", editData)
+      .catch((error) => console.log(error.response.data));
+  };
+
   return (
     <div className="container main-content">
       <div className="row">
@@ -55,7 +78,7 @@ const Profile = () => {
           <div className="ask-header">
             <p>Edit Your Profile</p>
           </div>
-          <form className="default-form">
+          <form className="default-form" onSubmit={handleSubmit}>
             <label htmlFor="username" className="form-title">
               <strong>Username:</strong>
             </label>
