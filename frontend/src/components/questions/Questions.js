@@ -2,13 +2,19 @@ import "./questions.css";
 import { useState } from "react";
 import answer2 from "../../assets/answer2.png";
 import like from "../../assets/like.png";
-import { getCategoryString, getDateString } from "./utils";
+import {
+  getCategoryString,
+  getCategoryListString,
+  getDateString,
+} from "./utils";
 import FilterBar from "../FilterBar/FilterBar";
 import {
   NEWEST,
   QUESTION_CONTENT_TYPE,
 } from "../../constants/search_constants";
 import useSearchContent from "../../hooks/useSearchContent";
+
+import { Tooltip } from "react-tooltip";
 
 export const Questions = () => {
   const defaultSearchData = {
@@ -75,7 +81,14 @@ export const Question = ({ question }) => {
           <span className="date">asked {getDateString(created_at)}</span>
         </div>
         <div className="col-md-6 categories">
-          {getCategoryString(categories)}
+          <span
+            style={{ cursor: "pointer" }}
+            data-tooltip-id="my-tooltip"
+            data-tooltip-html={getCategoryListString(categories)}
+          >
+            {getCategoryString(categories)}
+          </span>
+          <Tooltip id="my-tooltip" place="right" />
         </div>
       </div>
       <p className="question-heading">

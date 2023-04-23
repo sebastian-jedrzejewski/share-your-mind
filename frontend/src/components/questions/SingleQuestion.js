@@ -1,5 +1,9 @@
 import { useParams } from "react-router-dom";
-import { getCategoryString, getDateString } from "./utils";
+import {
+  getCategoryString,
+  getCategoryListString,
+  getDateString,
+} from "./utils";
 import useFetchData from "../../hooks/useFetchData";
 import "./questions.css";
 import like from "../../assets/like.png";
@@ -9,6 +13,7 @@ import { isAuthenticated } from "../../auth/auth";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
 import LoginModal, { showLoginModal } from "../Modals/LoginModal";
+import { Tooltip } from "react-tooltip";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
@@ -47,7 +52,14 @@ export const SingleQuestion = () => {
                 )}
               </div>
               <div className="col-md-6 categories">
-                {getCategoryString(categories)}
+                <span
+                  style={{ cursor: "pointer" }}
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-html={getCategoryListString(categories)}
+                >
+                  {getCategoryString(categories)}
+                </span>
+                <Tooltip id="my-tooltip" place="right" />
               </div>
             </div>
             <p className="question-heading">
@@ -111,7 +123,7 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
           document
             .getElementById(`${contentType}${contentId}`)
             ?.setAttribute(
-              "title",
+              "data-tooltip-content",
               `Click one more time to dislike the ${contentType}`
             );
           setIsLiked(true);
@@ -122,7 +134,7 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
           document
             ?.getElementById(`${contentType}${contentId}`)
             .setAttribute(
-              "title",
+              "data-tooltip-content",
               `Like the ${contentType} to make it more popular`
             );
           setIsLiked(false);
@@ -162,9 +174,8 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
         <div
           id={`${contentType}${contentId}`}
           className="question-info like-question"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title={`Like the ${contentType} to make it more popular`}
+          data-tooltip-id="like-tooltip"
+          data-tooltip-content={`Like the ${contentType} to make it more popular`}
           onClick={LikeOrDislike}
         >
           <div>
@@ -172,6 +183,7 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
             <span>
               {`Like this ${contentType}`} ({likes})
             </span>
+            <Tooltip id="like-tooltip" place="bottom" />
           </div>
         </div>
       </div>

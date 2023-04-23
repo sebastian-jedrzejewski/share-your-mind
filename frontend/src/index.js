@@ -4,6 +4,7 @@ import { render } from "react-dom";
 import "./styles/index.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import "react-tooltip/dist/react-tooltip.css";
 
 import reportWebVitals from "./reportWebVitals";
 

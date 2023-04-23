@@ -1,12 +1,37 @@
 export const getCategoryString = (categories) => {
   if (categories.length === 1) {
-    return categories[0].name;
+    return (
+      categories[0]?.name.charAt(0).toUpperCase() + categories[0]?.name.slice(1)
+    );
   } else if (categories.length === 2) {
-    return categories[0].name + ", " + categories[1].name;
+    return (
+      categories[0]?.name.charAt(0).toUpperCase() +
+      categories[0]?.name.slice(1) +
+      ", " +
+      categories[1]?.name.charAt(0).toUpperCase() +
+      categories[1]?.name.slice(1)
+    );
   } else if (categories.length > 2) {
-    return categories[0].name + " and " + (categories.length - 1) + " others";
+    return (
+      categories[0]?.name.charAt(0).toUpperCase() +
+      categories[0]?.name.slice(1) +
+      " and " +
+      (categories.length - 1) +
+      " others"
+    );
   }
   return "";
+};
+
+export const getCategoryListString = (categories) => {
+  let categoriesListString = "";
+  for (let i = 0; i < categories?.length; i++) {
+    categoriesListString +=
+      categories[i]?.name.charAt(0).toUpperCase() +
+      categories[i]?.name.slice(1) +
+      "<br/>";
+  }
+  return categoriesListString;
 };
 
 export const getDateString = (date) => {
