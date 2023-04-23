@@ -46,11 +46,8 @@ export const SingleQuestion = () => {
   return (
     <div className="container main-content">
       <LoginModal />
-      <DeleteModal
-        contentType={"question"}
-        deleteAction={deleteQuestion}
-        contentId={id}
-      />
+      <DeleteModal contentType={"question"} modalId={"question-delete-modal"} />
+      <DeleteModal contentType={"answer"} modalId={"answer-delete-modal"} />
       <div className="row">
         <div className="col-md-8 offset-md-2">
           <div className="welcome-container question-box">
@@ -91,7 +88,13 @@ export const SingleQuestion = () => {
               contentId={id}
             />
 
-            {user?.username == author?.username && <EditDelete />}
+            {user?.username == author?.username && (
+              <EditDelete
+                deleteModalId={"question-delete-modal"}
+                deleteAction={deleteQuestion}
+                contentId={id}
+              />
+            )}
           </div>
 
           <p className="answer-note">
@@ -206,7 +209,7 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
   );
 };
 
-export const EditDelete = ({ id }) => {
+export const EditDelete = ({ deleteModalId, deleteAction, contentId }) => {
   return (
     <div className="question-edit-delete">
       <button
@@ -216,7 +219,7 @@ export const EditDelete = ({ id }) => {
         Edit
       </button>
       <button
-        onClick={() => showDeleteModal()}
+        onClick={() => showDeleteModal(deleteModalId, deleteAction, contentId)}
         className="btn btn-danger"
         style={{ fontSize: "1.2rem" }}
       >
@@ -228,6 +231,13 @@ export const EditDelete = ({ id }) => {
 
 export const Answer = ({ user, answer }) => {
   const { id, created_at, updated_at, likes, author, body } = answer;
+
+  const deleteAnswer = (id) => {
+    apiCall
+      .delete(`/api/v1/answers/${id}`)
+      .then(() => document.location.reload());
+    console.log(`Answer ${id} deleted`);
+  };
 
   return (
     <>
@@ -253,7 +263,13 @@ export const Answer = ({ user, answer }) => {
         contentId={id}
       />
 
-      {user?.username == author?.username && <EditDelete />}
+      {user?.username == author?.username && (
+        <EditDelete
+          deleteModalId={"answer-delete-modal"}
+          deleteAction={deleteAnswer}
+          contentId={id}
+        />
+      )}
     </>
   );
 };

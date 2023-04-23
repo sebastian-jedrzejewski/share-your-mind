@@ -1,15 +1,22 @@
 import { Modal } from "bootstrap";
 
-export const showDeleteModal = () => {
-  const myModal = new Modal(document.getElementById("deleteModal"));
+export const showDeleteModal = (modalId, deleteAction, contentId) => {
+  const myModal = new Modal(document.getElementById(modalId));
+  const deleteButton = document.querySelector(
+    `#${modalId} .modal-dialog .modal-content .modal-footer #delete-btn-${modalId}`
+  );
+
+  deleteButton.addEventListener("click", () => {
+    deleteAction(contentId);
+  });
   myModal.show();
 };
 
-const DeleteModal = ({ contentType, deleteAction, contentId }) => {
+const DeleteModal = ({ contentType, modalId }) => {
   return (
     <div
       className="modal fade"
-      id="deleteModal"
+      id={modalId}
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       tabIndex="-1"
@@ -41,10 +48,11 @@ const DeleteModal = ({ contentType, deleteAction, contentId }) => {
               No
             </button>
             <button
+              id={`delete-btn-${modalId}`}
               type="button"
               className="btn btn-danger"
               data-bs-dismiss="modal"
-              onClick={() => deleteAction(contentId)}
+              //   onClick={() => deleteAction(contentId)}
             >
               Yes
             </button>
