@@ -123,7 +123,7 @@ const FilterBar = ({
       selectedCategoriesNames.push(selectedCategories[i]?.value);
     }
 
-    if (selectedCategoriesNames.length == 0) {
+    if (selectedCategoriesNames.length === 0) {
       selectedCategoriesNames = undefined;
     }
 
