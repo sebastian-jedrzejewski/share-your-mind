@@ -9,6 +9,6 @@ class Command(BaseCommand):
 
         with open("shareyourmind/common/management/commands/categories.txt", mode="r") as categories:
             for category in categories.readlines():
-                Category.objects.create(name=category)
+                Category.objects.create(name=category.strip())
 
         print("Categories were successfully created!")
