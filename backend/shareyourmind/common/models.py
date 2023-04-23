@@ -5,6 +5,10 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     is_active = models.BooleanField(default=True)
 
+    def save(self, *args, **kwargs):
+        self.name = self.name.__str__().lower()
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = "Categories"
 

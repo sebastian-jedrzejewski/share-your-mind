@@ -12,7 +12,7 @@ class CategoryView(
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return Category.objects.filter(is_active=True)
+        return Category.objects.filter(is_active=True).order_by("name")
 
     def get(self, request, *args, **kwargs):
         if "pk" in kwargs:
