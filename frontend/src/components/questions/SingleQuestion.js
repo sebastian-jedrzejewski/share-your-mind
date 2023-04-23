@@ -14,12 +14,14 @@ import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
 import LoginModal, { showLoginModal } from "../Modals/LoginModal";
 import { Tooltip } from "react-tooltip";
+import useFetchUser from "../../hooks/useFetchUser";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
   const { data, isLoading } = useFetchData(`/api/v1/questions/${id}`);
+  const { user, isLoading2 } = useFetchUser();
 
-  if (isLoading) {
+  if (isLoading || isLoading2) {
     return null;
   }
 
@@ -77,6 +79,8 @@ export const SingleQuestion = () => {
               initialState={likes}
               contentId={id}
             />
+
+            {user?.username == author?.username && <EditDelete />}
           </div>
 
           <p className="answer-note">
@@ -88,7 +92,7 @@ export const SingleQuestion = () => {
               {answers.map((answer, index) => {
                 return (
                   <>
-                    <Answer key={answer.id} answer={answer} />
+                    <Answer key={answer.id} user={user} answer={answer} />
                     {index !== answers?.length - 1 && (
                       <>
                         <br></br>
@@ -191,7 +195,23 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
   );
 };
 
-export const Answer = ({ answer }) => {
+export const EditDelete = ({ id }) => {
+  return (
+    <div className="question-edit-delete">
+      <button
+        className="btn btn-primary"
+        style={{ marginRight: "20px", fontSize: "1.2rem" }}
+      >
+        Edit
+      </button>
+      <button className="btn btn-danger" style={{ fontSize: "1.2rem" }}>
+        Delete
+      </button>
+    </div>
+  );
+};
+
+export const Answer = ({ user, answer }) => {
   const { id, created_at, updated_at, likes, author, body } = answer;
 
   return (
@@ -217,6 +237,8 @@ export const Answer = ({ answer }) => {
         initialState={likes}
         contentId={id}
       />
+
+      {user?.username == author?.username && <EditDelete />}
     </>
   );
 };
