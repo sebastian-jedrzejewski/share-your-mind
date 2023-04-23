@@ -15,6 +15,7 @@ import { ErrorMessage } from "../forms/FormControls";
 import LoginModal, { showLoginModal } from "../Modals/LoginModal";
 import { Tooltip } from "react-tooltip";
 import useFetchUser from "../../hooks/useFetchUser";
+import DeleteModal, { showDeleteModal } from "../Modals/DeleteModal";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
@@ -37,9 +38,19 @@ export const SingleQuestion = () => {
     answers,
   } = question;
 
+  const deleteQuestion = (id) => {
+    apiCall.delete(`/api/v1/questions/${id}`);
+    window.location.href = "/questions";
+  };
+
   return (
     <div className="container main-content">
       <LoginModal />
+      <DeleteModal
+        contentType={"question"}
+        deleteAction={deleteQuestion}
+        contentId={id}
+      />
       <div className="row">
         <div className="col-md-8 offset-md-2">
           <div className="welcome-container question-box">
@@ -204,7 +215,11 @@ export const EditDelete = ({ id }) => {
       >
         Edit
       </button>
-      <button className="btn btn-danger" style={{ fontSize: "1.2rem" }}>
+      <button
+        onClick={() => showDeleteModal()}
+        className="btn btn-danger"
+        style={{ fontSize: "1.2rem" }}
+      >
         Delete
       </button>
     </div>
