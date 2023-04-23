@@ -14,7 +14,6 @@ const Login = () => {
     detail: "",
   });
   const classes = useStyles();
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -28,7 +27,7 @@ const Login = () => {
       .post("/auth/jwt/create/", { ...user })
       .then((response) => {
         performAuthentication(response);
-        navigate("/");
+        window.location.href = "/";
       })
       .catch((error) => {
         setErrorField({ ...error.response.data });
