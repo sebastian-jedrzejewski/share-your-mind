@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import MultiSelect from "../forms/MulitSelect";
-import useFetchUser from "../../hooks/useFetchUser";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
 import { useParams } from "react-router-dom";
@@ -10,13 +9,16 @@ import RichTextField, {
 } from "../forms/RichTextField";
 
 const EditQuestion = () => {
-  const { user, isLoading } = useFetchUser();
   const { id } = useParams();
-  const { data } = useFetchData(`/api/v1/questions/${id}`);
+  const { data, isLoading } = useFetchData(`/api/v1/questions/${id}`);
   const [questionData, setQuestionData] = useState({
     heading: "",
     description: "",
     categories: "",
+  });
+  const [errorField, setErrorField] = useState({
+    heading: "",
+    categories_id: "",
   });
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -63,37 +65,36 @@ const EditQuestion = () => {
     setQuestionData({ ...questionData, [name]: value });
   };
 
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  //     let categoriesIds = [];
-  //     for (let i = 0; i < profileData?.favouriteCategories.length; i++) {
-  //       categoriesIds.push({
-  //         id: parseInt(profileData?.favouriteCategories[i].id),
-  //       });
-  //     }
+    let categoriesIds = [];
+    for (let i = 0; i < questionData?.categories.length; i++) {
+      categoriesIds.push(parseInt(questionData?.categories[i].id));
+    }
 
-  //     const editData = {
-  //       username: profileData?.username,
-  //       first_name: profileData?.firstName,
-  //       last_name: profileData?.lastName,
-  //       favourite_categories: categoriesIds,
-  //     };
+    const editData = {
+      heading: questionData?.heading,
+      description: questionData?.description,
+      categories_id: categoriesIds,
+    };
 
-  //     apiCall
-  //       .patch("/auth/users/me/", editData)
-  //       .then(() => {
-  //         setIsSuccess(true);
-  //         setErrorField({
-  //           username: "",
-  //           favourite_categories: "",
-  //         });
-  //       })
-  //       .catch((error) => {
-  //         setErrorField({ ...error.response.data });
-  //         setIsSuccess(false);
-  //       });
-  //   };
+    console.log(editData);
+
+    apiCall
+      .patch(`/api/v1/questions/${id}/`, editData)
+      .then(() => {
+        setIsSuccess(true);
+        setErrorField({
+          heading: "",
+          categories_id: "",
+        });
+      })
+      .catch((error) => {
+        setErrorField({ ...error.response.data });
+        setIsSuccess(false);
+      });
+  };
 
   return (
     <div className="container main-content">
@@ -105,7 +106,7 @@ const EditQuestion = () => {
           <div className="ask-header">
             <p>Edit Your Question</p>
           </div>
-          <form className="default-form">
+          <form className="default-form" onSubmit={handleSubmit}>
             <label htmlFor="heading" className="form-title">
               <strong>Heading:</strong>
             </label>
@@ -117,12 +118,12 @@ const EditQuestion = () => {
               value={questionData?.heading}
               onChange={handleChange}
             />
-            {/* {errorField.username && (
+            {errorField.heading && (
               <>
-                <ErrorMessage message={errorField.username} />
+                <ErrorMessage message={errorField.heading} />
                 <br />
               </>
-            )} */}
+            )}
 
             <label htmlFor="description" className="form-title">
               <p>Description:</p>
@@ -146,12 +147,12 @@ const EditQuestion = () => {
               selectedCategories={questionData?.categories}
               setSelectedCategories={setSelectedCategories}
             />
-            {/* {errorField.favourite_categories && (
+            {errorField.categories_id && (
               <>
-                <ErrorMessage message={errorField.favourite_categories} />
+                <ErrorMessage message={errorField.categories_id} />
                 <br />
               </>
-            )} */}
+            )}
 
             <div className="submit-wrapper">
               <button
@@ -167,7 +168,8 @@ const EditQuestion = () => {
               </button>
               {isSuccess && (
                 <p className="message-success text-center mt-3">
-                  Your Question has been updated successfully.
+                  Your Question has been updated successfully. Back to
+                  <a href={`/questions/${id}`}> your Question.</a>
                 </p>
               )}
             </div>
