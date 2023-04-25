@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import { Questions } from "../components/questions/Questions";
 import { SingleQuestion } from "../components/questions/SingleQuestion";
-import ErrorModal from "../components/Modals/ErrorModal";
+import ErrorModal from "../components/modals/ErrorModal";
 import useShowError from "../hooks/useShowError";
 
 export const QuestionsPage = () => {

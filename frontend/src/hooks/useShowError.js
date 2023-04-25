@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { showErrorModal } from "../components/Modals/ErrorModal";
+import { showErrorModal } from "../components/modals/ErrorModal";
 
 const useShowError = () => {
   let somethingWentWrong = localStorage.getItem("somethingWentWrong");

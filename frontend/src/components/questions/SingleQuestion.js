@@ -12,10 +12,10 @@ import RichTextField from "../forms/RichTextField";
 import { isAuthenticated } from "../../auth/auth";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
-import LoginModal, { showLoginModal } from "../Modals/LoginModal";
+import LoginModal, { showLoginModal } from "../modals/LoginModal";
 import { Tooltip } from "react-tooltip";
 import useFetchUser from "../../hooks/useFetchUser";
-import DeleteModal, { showDeleteModal } from "../Modals/DeleteModal";
+import DeleteModal, { showDeleteModal } from "../modals/DeleteModal";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
@@ -88,7 +88,7 @@ export const SingleQuestion = () => {
               contentId={id}
             />
 
-            {user?.username == author?.username && (
+            {user?.username === author?.username && (
               <EditDelete
                 deleteModalId={"question-delete-modal"}
                 deleteAction={deleteQuestion}
@@ -210,9 +210,16 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
 };
 
 export const EditDelete = ({ deleteModalId, deleteAction, contentId }) => {
+  const goToEditPage = () => {
+    if (deleteModalId.startsWith("question")) {
+      window.location.href = `/edit-question/${contentId}`;
+    }
+  };
+
   return (
     <div className="question-edit-delete">
       <button
+        onClick={goToEditPage}
         className="btn btn-primary"
         style={{ marginRight: "20px", fontSize: "1.2rem" }}
       >
@@ -263,7 +270,7 @@ export const Answer = ({ user, answer }) => {
         contentId={id}
       />
 
-      {user?.username == author?.username && (
+      {user?.username === author?.username && (
         <EditDelete
           deleteModalId={"answer-delete-modal"}
           deleteAction={deleteAnswer}

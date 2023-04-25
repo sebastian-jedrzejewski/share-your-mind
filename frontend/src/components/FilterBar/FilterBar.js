@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { isAuthenticated } from "../../auth/auth";
 import "./filterbar.css";
-import LoginModal, { showLoginModal } from "../Modals/LoginModal";
+import LoginModal, { showLoginModal } from "../modals/LoginModal";
 import {
   MOST_ANSWERS,
   MOST_LIKES,
@@ -10,7 +10,7 @@ import {
 import MultiSelect from "../forms/MulitSelect";
 import RecommendedModal, {
   showRecommendedModal,
-} from "../Modals/RecommendedModal";
+} from "../modals/RecommendedModal";
 import useFetchUser from "../../hooks/useFetchUser";
 
 const FilterBar = ({

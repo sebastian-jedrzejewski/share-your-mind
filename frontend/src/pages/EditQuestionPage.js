@@ -1,11 +1,11 @@
-import useFetchUser from "../hooks/useFetchUser";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
+import useFetchUser from "../hooks/useFetchUser";
 import useShowError from "../hooks/useShowError";
 import ErrorModal from "../components/modals/ErrorModal";
-import Login from "../components/forms/Login";
+import EditQuestion from "../components/EditQuestion/EditQuestion";
 
-const LoginPage = () => {
+const EditQuestionPage = () => {
   const { user, isLoading } = useFetchUser();
 
   useShowError();
@@ -14,10 +14,10 @@ const LoginPage = () => {
     <>
       <ErrorModal />
       <Navbar user={user} isLoading={isLoading} />
-      <Login />
+      <EditQuestion />
       <Footer />
     </>
   );
 };
 
-export default LoginPage;
+export default EditQuestionPage;

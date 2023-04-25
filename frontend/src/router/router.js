@@ -6,6 +6,7 @@ import GuardedComponent from "./GuardedComponent";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import EditProfilePage from "../pages/EditProfilePage";
+import EditQuestionPage from "../pages/EditQuestionPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/questions/:id",
     element: <SingleQuestionPage />,
+  },
+  {
+    path: "/edit-question/:id",
+    element: <EditQuestionPage />,
   },
   {
     path: "/ask-question",
