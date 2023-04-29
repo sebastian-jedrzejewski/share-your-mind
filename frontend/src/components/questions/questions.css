@@ -122,6 +122,13 @@
   color: white;
 }
 
+.results-count {
+  text-align: center;
+  margin-top: 15px;
+  color: #964202;
+  font-size: 2rem;
+}
+
 @media (max-width: 768px) {
   .author {
     text-align: center;

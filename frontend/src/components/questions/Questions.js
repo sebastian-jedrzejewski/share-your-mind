@@ -51,6 +51,7 @@ export const Questions = () => {
       />
       <div className="row">
         <div className="col-md-6 offset-md-3">
+          <p className="results-count">{data?.count} results</p>
           {data?.results?.map((question) => {
             return <Question key={question.id} question={question} />;
           })}
