@@ -1,5 +1,4 @@
 import Pagination from "react-bootstrap/Pagination";
-import { useEffect } from "react";
 import usePagination from "../../hooks/usePagination";
 import { DOTS } from "../../constants/common_constants";
 
@@ -20,10 +19,6 @@ const CustomPagination = ({
     siblingCount,
     currentPage,
   });
-
-  useEffect(() => {
-    // setSearchData({ ...searchData, page: currentPage });
-  }, [currentPage]);
 
   const totalPageCount = Math.ceil(totalCount / pageSize);
 
