@@ -76,7 +76,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     description = serializers.SerializerMethodField()
     categories = CategorySerializer(many=True)
-    answers = AnswerDetailSerializer(many=True)
+    answers = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
@@ -94,6 +94,10 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
     def get_description(self, obj):
         return mark_safe(obj.description)
+
+    def get_answers(self, obj):
+        answers = obj.answers.all().order_by("-likes", "created_at__date", "-updated_at")
+        return AnswerDetailSerializer(answers, many=True).data
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):
