@@ -15,11 +15,14 @@ import {
 import useSearchContent from "../../hooks/useSearchContent";
 
 import { Tooltip } from "react-tooltip";
+import CustomPagination from "../Pagination/CustomPagination";
+import { PAGE_SIZE } from "../../constants/common_constants";
 
 export const Questions = () => {
   const defaultSearchData = {
     object_content_type: QUESTION_CONTENT_TYPE,
     order_by: [NEWEST],
+    page: 1,
   };
 
   const [searchData, setSearchData] = useState(defaultSearchData);
@@ -31,6 +34,8 @@ export const Questions = () => {
   });
 
   const { data, isLoading } = useSearchContent(searchData);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   if (isLoading) {
     return null;
@@ -46,11 +51,21 @@ export const Questions = () => {
       />
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          {data.map((question) => {
+          {data?.results?.map((question) => {
             return <Question key={question.id} question={question} />;
           })}
         </div>
       </div>
+      {Math.ceil(data?.count / PAGE_SIZE) > 1 && (
+        <CustomPagination
+          totalCount={data?.count}
+          pageSize={PAGE_SIZE}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          searchData={searchData}
+          setSearchData={setSearchData}
+        />
+      )}
     </div>
   );
 };

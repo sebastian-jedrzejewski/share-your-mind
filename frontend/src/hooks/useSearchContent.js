@@ -7,7 +7,13 @@ const useSearchContent = (searchData) => {
 
   const search = useCallback(async () => {
     setIsLoading(true);
-    const response = await apiCall.post("/api/v1/search/", { ...searchData });
+    const response = await apiCall.post(
+      `/api/v1/search/?page=${searchData?.page}`,
+      {
+        ...searchData,
+        page: undefined,
+      }
+    );
     setData(response.data);
     setIsLoading(false);
   }, [searchData]);
