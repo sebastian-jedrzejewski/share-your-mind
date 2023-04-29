@@ -1,3 +1,4 @@
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 from rest_framework import serializers
 
@@ -52,6 +53,11 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
             "likes",
             "question_id",
         )
+
+    def validate_body(self, body):
+        body = strip_tags(body)
+        if body == "":
+            raise serializers.ValidationError(["This field may not be blank."])
 
 
 class QuestionListSerializer(serializers.ModelSerializer):
