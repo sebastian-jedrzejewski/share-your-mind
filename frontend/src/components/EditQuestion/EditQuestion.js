@@ -79,8 +79,6 @@ const EditQuestion = () => {
       categories_id: categoriesIds,
     };
 
-    console.log(editData);
-
     apiCall
       .patch(`/api/v1/questions/${id}/`, editData)
       .then(() => {
