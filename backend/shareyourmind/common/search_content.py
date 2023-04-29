@@ -1,6 +1,7 @@
 from django.core.exceptions import FieldError
 from django.db.models import Q, Count
 from rest_framework import generics, serializers, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -69,6 +70,7 @@ class SearchAPIView(generics.CreateAPIView):
     order_by_map = ORDER_BY_MAP
 
     permission_classes = [AllowAny]
+    pagination_class = PageNumberPagination
 
     def post(self, request, *args, **kwargs):
         serializer = self.request_serializer(data=request.data)
@@ -81,9 +83,10 @@ class SearchAPIView(generics.CreateAPIView):
             )
 
         result_qs = self.get_result_queryset(search_data, self.order_by_map)
+        paginated_result_qs = self.paginate_queryset(result_qs)
 
-        result_data = self.item_serializer(instance=result_qs, many=True).data
-        return Response(data=result_data, status=status.HTTP_200_OK)
+        result_data = self.item_serializer(instance=paginated_result_qs, many=True).data
+        return self.get_paginated_response(data=result_data)
 
     def get_result_queryset(self, search_data, order_by_map):
         user = self.request.user
