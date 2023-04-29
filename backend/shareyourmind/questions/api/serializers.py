@@ -102,7 +102,9 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
         return mark_safe(obj.description)
 
     def get_answers(self, obj):
-        answers = obj.answers.all().order_by("-likes", "created_at__date", "-updated_at")
+        answers = obj.answers.all().order_by(
+            "-likes", "created_at__date", "-updated_at"
+        )
         return AnswerDetailSerializer(answers, many=True).data
 
 

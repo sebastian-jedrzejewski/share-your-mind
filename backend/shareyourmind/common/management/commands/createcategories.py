@@ -7,7 +7,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         Category.objects.all().delete()
 
-        with open("shareyourmind/common/management/commands/categories.txt", mode="r") as categories:
+        with open(
+            "shareyourmind/common/management/commands/categories.txt", mode="r"
+        ) as categories:
             for category in categories.readlines():
                 Category.objects.create(name=category.strip())
 
