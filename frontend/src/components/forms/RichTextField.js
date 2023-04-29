@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Component } from "react";
-import { ContentState, EditorState } from "draft-js";
+import React, { useState, useEffect } from "react";
+import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import { convertFromHTML, convertToHTML } from "draft-convert";
+import { convertToHTML } from "draft-convert";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./forms.css";

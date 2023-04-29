@@ -8,7 +8,9 @@ import useFetchData from "../../hooks/useFetchData";
 import "./questions.css";
 import like from "../../assets/like.png";
 import { useEffect, useState } from "react";
-import RichTextField from "../forms/RichTextField";
+import RichTextField, {
+  RichTextFieldWithContent,
+} from "../forms/RichTextField";
 import { isAuthenticated } from "../../auth/auth";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
@@ -20,9 +22,16 @@ import DeleteModal, { showDeleteModal } from "../modals/DeleteModal";
 export const SingleQuestion = () => {
   const { id } = useParams();
   const { data, isLoading } = useFetchData(`/api/v1/questions/${id}`);
-  const { user, isLoading2 } = useFetchUser();
+  const { user } = useFetchUser();
 
-  if (isLoading || isLoading2) {
+  const [answerState, setAnswerState] = useState({
+    initialAnswerContent: "",
+    answerContent: "",
+    isAnswerModified: false,
+    answerId: "",
+  });
+
+  if (isLoading) {
     return null;
   }
 
@@ -106,7 +115,13 @@ export const SingleQuestion = () => {
               {answers.map((answer, index) => {
                 return (
                   <>
-                    <Answer key={answer.id} user={user} answer={answer} />
+                    <Answer
+                      key={answer.id}
+                      user={user}
+                      answer={answer}
+                      answerState={answerState}
+                      setAnswerState={setAnswerState}
+                    />
                     {index !== answers?.length - 1 && (
                       <>
                         <br></br>
@@ -119,7 +134,11 @@ export const SingleQuestion = () => {
             </div>
           )}
 
-          <AnswerField questionId={id} />
+          <AnswerField
+            questionId={id}
+            answerState={answerState}
+            setAnswerState={setAnswerState}
+          />
         </div>
       </div>
     </div>
@@ -209,17 +228,55 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
   );
 };
 
-export const EditDelete = ({ deleteModalId, deleteAction, contentId }) => {
+export const EditDelete = ({
+  deleteModalId,
+  deleteAction,
+  contentId,
+  answerState,
+  setAnswerState,
+}) => {
+  const { data } = useFetchData(
+    deleteModalId.startsWith("question")
+      ? `/api/v1/questions/${contentId}`
+      : `/api/v1/answers/${contentId}`
+  );
+
   const goToEditPage = () => {
-    if (deleteModalId.startsWith("question")) {
-      window.location.href = `/edit-question/${contentId}`;
+    window.location.href = `/edit-question/${contentId}`;
+  };
+
+  const scrollToEditAnswer = () => {
+    const yourAnswer = document.getElementById("your-answer");
+    if (yourAnswer) {
+      yourAnswer.scrollIntoView({ behavior: "smooth" });
     }
+
+    const answerToQuestion = document.getElementById("answer-to-question");
+    if (answerToQuestion) {
+      answerToQuestion.innerHTML = "Save changes";
+    }
+
+    const cancelEditing = document.getElementById("cancel-editing");
+    if (cancelEditing) {
+      cancelEditing.style.display = "inline-block";
+    }
+
+    setAnswerState({
+      isAnswerModified: true,
+      answerId: contentId,
+      answerContent: data?.body,
+      initialAnswerContent: data?.body,
+    });
   };
 
   return (
     <div className="question-edit-delete">
       <button
-        onClick={goToEditPage}
+        onClick={
+          deleteModalId.startsWith("question")
+            ? goToEditPage
+            : scrollToEditAnswer
+        }
         className="btn btn-primary"
         style={{ marginRight: "20px", fontSize: "1.2rem" }}
       >
@@ -236,14 +293,13 @@ export const EditDelete = ({ deleteModalId, deleteAction, contentId }) => {
   );
 };
 
-export const Answer = ({ user, answer }) => {
+export const Answer = ({ user, answer, answerState, setAnswerState }) => {
   const { id, created_at, updated_at, likes, author, body } = answer;
 
   const deleteAnswer = (id) => {
     apiCall
       .delete(`/api/v1/answers/${id}`)
       .then(() => document.location.reload());
-    console.log(`Answer ${id} deleted`);
   };
 
   return (
@@ -275,47 +331,109 @@ export const Answer = ({ user, answer }) => {
           deleteModalId={"answer-delete-modal"}
           deleteAction={deleteAnswer}
           contentId={id}
+          answerState={answerState}
+          setAnswerState={setAnswerState}
         />
       )}
     </>
   );
 };
 
-export const AnswerField = ({ questionId }) => {
-  const [answerContent, setAnswerContent] = useState("");
+export const AnswerField = ({ questionId, answerState, setAnswerState }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ body: "" });
+
+  useEffect(() => {
+    if (answerState?.isAnswerModified === false) {
+      document.getElementById("answer-to-question").innerHTML = "Answer";
+    }
+  }, [answerState?.isAnswerModified]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isAuthenticated()) {
-      apiCall
-        .post("/api/v1/answers/", {
-          question_id: questionId,
-          body: answerContent,
-        })
-        .then(() => {
-          setIsSuccess(true);
-          setAnswerContent("");
-          setErrorMessage({ body: "" });
-        })
-        .catch((error) => {
-          setErrorMessage({ ...error.response.data });
-          console.log(error.response.data);
-        });
+      if (!answerState?.isAnswerModified) {
+        apiCall
+          .post("/api/v1/answers/", {
+            question_id: questionId,
+            body: answerState?.answerContent,
+          })
+          .then(() => {
+            setIsSuccess(true);
+            setTimeout(() => {
+              setIsSuccess(false);
+            }, 3000);
+            setAnswerContent("");
+            setErrorMessage({ body: "" });
+            setAnswerState({
+              ...answerState,
+              isAnswerModified: false,
+              initialAnswerContent: "<p></p>",
+            });
+          })
+          .catch((error) => {
+            setErrorMessage({ ...error.response.data });
+            console.log(error.response.data);
+          });
+      } else {
+        apiCall
+          .patch(`/api/v1/answers/${answerState?.answerId}/`, {
+            body: answerState?.answerContent,
+          })
+          .then(() => {
+            setIsSuccess(true);
+            setTimeout(() => {
+              setIsSuccess(false);
+            }, 3000);
+            setAnswerContent("");
+            setErrorMessage({ body: "" });
+            setAnswerState({
+              ...answerState,
+              isAnswerModified: false,
+              initialAnswerContent: "",
+            });
+          })
+          .catch((error) => {
+            setErrorMessage({ ...error.response.data });
+            console.log(error.response.data);
+          });
+      }
+      document.getElementById("cancel-editing").style.display = "none";
     } else {
       showLoginModal();
     }
   };
 
+  const setAnswerContent = (answerContent) => {
+    setAnswerState({ ...answerState, answerContent: answerContent });
+  };
+
+  const cancelEditing = (e) => {
+    setAnswerState({
+      ...answerState,
+      isAnswerModified: false,
+      initialAnswerContent: "",
+    });
+    e.target.style.display = "none";
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <p className="answer-note">Your Answer</p>
-        <RichTextField
-          descriptionContent={answerContent}
-          setDescriptionContent={setAnswerContent}
-        />
+        <p className="answer-note" id="your-answer">
+          Your Answer
+        </p>
+        {answerState?.initialAnswerContent === "" ? (
+          <RichTextField
+            descriptionContent={answerState?.initialAnswerContent}
+            setDescriptionContent={setAnswerContent}
+          />
+        ) : (
+          <RichTextFieldWithContent
+            descriptionContent={answerState?.initialAnswerContent}
+            setDescriptionContent={setAnswerContent}
+          />
+        )}
         {errorMessage?.body && <ErrorMessage message={errorMessage.body} />}
         <button
           className="btn btn-default link-button"
@@ -325,16 +443,31 @@ export const AnswerField = ({ questionId }) => {
             fontSize: "1.4rem",
           }}
           type="submit"
+          id="answer-to-question"
         >
           Answer
+        </button>
+        <button
+          className="btn btn-default link-button"
+          style={{
+            marginTop: "0",
+            marginLeft: "10px",
+            padding: "10px 30px",
+            fontSize: "1.4rem",
+            display: "none",
+          }}
+          type="button"
+          id="cancel-editing"
+          onClick={cancelEditing}
+        >
+          Cancel
         </button>
         {isSuccess && (
           <p
             className="message-success mt-3"
             style={{ textAlign: "center", color: "#964202" }}
           >
-            Your answer has been published successfully. To see it, reload the
-            page.
+            Your answer has been saved successfully. To see it, reload the page.
           </p>
         )}
       </form>
