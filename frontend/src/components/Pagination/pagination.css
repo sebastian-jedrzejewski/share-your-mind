@@ -1,0 +1,17 @@
+.page-link {
+  color: #964202;
+}
+
+.page-item.active .page-link {
+  background-color: #964202;
+  border: none;
+}
+
+.page-item:hover .page-link {
+  color: #a7727d;
+}
+
+.page-item.active:hover .page-link {
+  color: white;
+  cursor: default;
+}
