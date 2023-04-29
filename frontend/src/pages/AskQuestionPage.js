@@ -3,7 +3,7 @@ import Footer from "../components/Footer/Footer";
 import useFetchUser from "../hooks/useFetchUser";
 import AskQuestionForm from "../components/forms/AskQuestionForm";
 import useShowError from "../hooks/useShowError";
-import ErrorModal from "../components/Modals/ErrorModal";
+import ErrorModal from "../components/modals/ErrorModal";
 
 const AskQuestionPage = () => {
   const { user, isLoading } = useFetchUser();

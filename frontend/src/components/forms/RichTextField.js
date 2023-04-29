@@ -58,4 +58,38 @@ const RichTextField = ({ descriptionContent, setDescriptionContent }) => {
   );
 };
 
+export const RichTextFieldWithContent = ({
+  descriptionContent,
+  setDescriptionContent,
+}) => {
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+
+  useEffect(() => {
+    let stateFromHTML = require("draft-js-import-html").stateFromHTML;
+    let contentState = stateFromHTML(descriptionContent + " ");
+    const newState = EditorState.createWithContent(contentState);
+    setEditorState(newState);
+    setEditorState(EditorState.moveSelectionToEnd(newState));
+  }, [descriptionContent]);
+
+  const onEditorStateChange = (editorState) => {
+    let html = convertToHTML(editorState.getCurrentContent());
+    setDescriptionContent(html);
+    setEditorState(editorState);
+  };
+
+  return (
+    <Editor
+      editorState={editorState}
+      onEditorStateChange={onEditorStateChange}
+      toolbar={toolbarOptions}
+      wrapperClassName="wrapper-class"
+      editorClassName="editor-class"
+      toolbarClassName="toolbar-class"
+    />
+  );
+};
+
 export default RichTextField;

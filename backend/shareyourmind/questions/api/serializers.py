@@ -1,3 +1,4 @@
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 from rest_framework import serializers
 
@@ -53,6 +54,11 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
             "question_id",
         )
 
+    def validate_body(self, body):
+        body = strip_tags(body)
+        if body == "":
+            raise serializers.ValidationError(["This field may not be blank."])
+
 
 class QuestionListSerializer(serializers.ModelSerializer):
     author = UserSerializer()
@@ -76,7 +82,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     description = serializers.SerializerMethodField()
     categories = CategorySerializer(many=True)
-    answers = AnswerDetailSerializer(many=True)
+    answers = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
@@ -94,6 +100,10 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
 
     def get_description(self, obj):
         return mark_safe(obj.description)
+
+    def get_answers(self, obj):
+        answers = obj.answers.all().order_by("-likes", "created_at__date", "-updated_at")
+        return AnswerDetailSerializer(answers, many=True).data
 
 
 class QuestionCreateSerializer(serializers.ModelSerializer):

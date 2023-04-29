@@ -115,6 +115,13 @@
   text-align: center;
 }
 
+.question-edit-delete {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  color: white;
+}
+
 @media (max-width: 768px) {
   .author {
     text-align: center;
