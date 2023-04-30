@@ -13,7 +13,6 @@ class Poll(PublishedContentMixin, ObjectContentTypeMixin):
     heading = models.TextField(max_length=400)
 
     likes = None
-    votes = models.PositiveIntegerField(default=0)
 
     categories = models.ManyToManyField("common.Category", related_name="polls")
 
@@ -22,6 +21,17 @@ class Poll(PublishedContentMixin, ObjectContentTypeMixin):
         if len(self.heading.__str__()) > 100:
             return self.heading[:100] + "..."
         return self.heading
+
+    @property
+    def number_of_comments(self):
+        return self.comments.count()
+
+    @property
+    def votes(self):
+        result = 0
+        for answer in self.answers.all():
+            result = result + answer.votes
+        return result
 
     def __str__(self):
         return f"{self.author}: {self.short_heading}"
@@ -35,6 +45,7 @@ class PollAnswer(PublishedContentMixin):
 
     author = None
     likes = None
+    votes = models.PositiveIntegerField(default=0)
 
     @property
     def short_heading(self):
@@ -54,3 +65,6 @@ class PollComment(CommentMixin):
     poll = models.ForeignKey(
         "polls.Poll", on_delete=models.CASCADE, related_name="comments"
     )
+
+    def __str__(self):
+        return f"{self.author}: {self.short_body}"

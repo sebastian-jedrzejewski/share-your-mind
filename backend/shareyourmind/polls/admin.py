@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import TabularInline
 
-from shareyourmind.polls.models import Poll, PollAnswer
+from shareyourmind.polls.models import Poll, PollAnswer, PollComment
 
 
 class PollAnswerInline(TabularInline):
@@ -13,3 +13,8 @@ class PollAnswerInline(TabularInline):
 class PollAdmin(admin.ModelAdmin):
     inlines = [PollAnswerInline]
     list_display = ("author", "short_heading")
+
+
+@admin.register(PollComment)
+class PollCommentAdmin(admin.ModelAdmin):
+    list_display = ("author", "short_body")
