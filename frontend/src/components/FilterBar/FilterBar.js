@@ -22,6 +22,7 @@ const FilterBar = ({
   setSearchFormState,
   contentType,
   mostFilters,
+  createButton,
 }) => {
   const { user } = useFetchUser();
 
@@ -54,7 +55,7 @@ const FilterBar = ({
 
   const checkAuthenticity = () => {
     if (isAuthenticated()) {
-      window.location.href = "/ask-question";
+      window.location.href = createButton?.link;
     } else {
       showLoginModal();
     }
@@ -199,7 +200,7 @@ const FilterBar = ({
               style={{ marginTop: "0", padding: "10px 30px" }}
               onClick={() => checkAuthenticity()}
             >
-              Ask Question
+              {createButton?.name}
             </div>
           </div>
         </div>

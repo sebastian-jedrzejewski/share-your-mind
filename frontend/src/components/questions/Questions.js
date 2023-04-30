@@ -53,6 +53,7 @@ export const Questions = () => {
           { id: "most-answers", name: "Most Answers" },
           { id: "most-likes", name: "Most Likes" },
         ]}
+        createButton={{ name: "Ask Question", link: "/ask-question" }}
       />
       <div className="row">
         <div className="col-md-6 offset-md-3">

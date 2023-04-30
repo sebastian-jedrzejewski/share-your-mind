@@ -14,6 +14,7 @@ import CustomPagination from "../Pagination/CustomPagination";
 import { PAGE_SIZE } from "../../constants/common_constants";
 import useFetchData from "../../hooks/useFetchData";
 import apiCall from "../../api/axios";
+import { ErrorMessage } from "../forms/FormControls";
 
 export const Polls = () => {
   const defaultSearchData = {
@@ -51,6 +52,7 @@ export const Polls = () => {
           { id: "most-comments", name: "Most Comments" },
           { id: "most-votes", name: "Most Votes" },
         ]}
+        createButton={{ name: "Create Poll", link: "/create-poll" }}
       />
       <div className="row">
         <div className="col-md-6 offset-md-3">
@@ -90,8 +92,10 @@ export const Poll = ({ poll, votedAnswers }) => {
   const { data } = useFetchData(`/api/v1/polls/${id}/`);
 
   const [selectedOption, setSelectedOption] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [votesState, setVotesState] = useState(votes);
 
-  const markPollAsVoted = (selectedAnswer) => {
+  const markPollAsVoted = (selectedAnswer, hasBeenJustVoted) => {
     let radioButton, answer, answerFill, percentage;
     for (let i = 0; i < answers?.length; i++) {
       radioButton = document.querySelector(`#flexRadio${answers[i]?.id}`);
@@ -103,18 +107,34 @@ export const Poll = ({ poll, votedAnswers }) => {
       );
 
       if (answer && answerFill) {
-        percentage = (100 * answers[i]?.votes) / votes;
+        if (hasBeenJustVoted) {
+          if (answers[i]?.id + "" === selectedAnswer + "") {
+            percentage = (100 * (answers[i]?.votes + 1)) / (votes + 1);
+          } else {
+            percentage = (100 * answers[i]?.votes) / (votes + 1);
+          }
+        } else {
+          if (answers[i]?.id + "" === selectedAnswer + "") {
+            percentage = (100 * answers[i]?.votes) / votes;
+          } else {
+            percentage = (100 * answers[i]?.votes) / votes;
+          }
+        }
+
+        percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
         answer.innerHTML += ` (${percentage}%)`;
         answerFill.style.width = `${percentage}%`;
       }
 
-      console.log(answers[i]?.id, selectedAnswer);
       if (answers[i]?.id + "" === selectedAnswer + "") {
         setSelectedOption(answers[i]?.id + "");
         radioButton.checked = true;
       }
       radioButton.disabled = true;
       document.getElementById(`vote${id}`).disabled = true;
+      document
+        .getElementById(`vote-button-${id}`)
+        .setAttribute("data-tooltip-content", "You already voted in this poll");
     }
   };
 
@@ -122,7 +142,7 @@ export const Poll = ({ poll, votedAnswers }) => {
   useEffect(() => {
     for (let i = 0; i < answers?.length; i++) {
       if (votedAnswers?.voted_poll_answers_ids?.includes(answers[i]?.id)) {
-        markPollAsVoted(answers[i]?.id);
+        markPollAsVoted(answers[i]?.id, false);
         break;
       }
     }
@@ -130,9 +150,19 @@ export const Poll = ({ poll, votedAnswers }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (selectedOption === "") {
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+      return;
+    }
+
     apiCall.post(`/api/v1/poll_answers/${selectedOption}/vote/`);
 
-    markPollAsVoted(selectedOption);
+    setVotesState((votes) => votes + 1);
+    markPollAsVoted(selectedOption, true);
   };
 
   const onValueChange = (e) => {
@@ -160,12 +190,12 @@ export const Poll = ({ poll, votedAnswers }) => {
       <p className="question-heading">
         <a href={`/questions/${id}`}>{heading}</a>
       </p>
-      <p style={{ marginTop: "0" }}>{votes} votes</p>
+      <p style={{ marginTop: "0" }}>{votesState} votes</p>
       <form onSubmit={handleSubmit}>
         <div className="question-description">
           {answers?.map((answer) => {
             return (
-              <>
+              <div key={answer?.id}>
                 <div className="form-check vote-form-check">
                   <input
                     className="form-check-input vote-check-input"
@@ -184,18 +214,29 @@ export const Poll = ({ poll, votedAnswers }) => {
                     <span className="vote-label-fill"></span>
                   </label>
                 </div>
-              </>
+              </div>
             );
           })}
         </div>
-        <button
-          className="btn btn-default link-button"
-          style={{ marginTop: "5px", marginBottom: "5px", fontSize: "1.2rem" }}
-          type="submit"
-          id={`vote${id}`}
+        <span
+          id={`vote-button-${id}`}
+          data-tooltip-id="my-tooltip"
+          data-tooltip-content=""
         >
-          Vote
-        </button>
+          <button
+            className="btn btn-default link-button"
+            style={{
+              marginTop: "5px",
+              marginBottom: "5px",
+              fontSize: "1.2rem",
+            }}
+            type="submit"
+            id={`vote${id}`}
+          >
+            Vote
+          </button>
+        </span>
+        {isError && <ErrorMessage message="You have to choose one option" />}
       </form>
       <div className="question-footer">
         <div className="question-wrapper">
