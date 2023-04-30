@@ -78,7 +78,7 @@ export const Polls = () => {
   );
 };
 
-export const Poll = ({ poll, votedAnswers }) => {
+export const Poll = ({ poll, votedAnswers, commentsBarNeeded = true }) => {
   const {
     id,
     created_at,
@@ -188,7 +188,7 @@ export const Poll = ({ poll, votedAnswers }) => {
         </div>
       </div>
       <p className="question-heading">
-        <a href={`/questions/${id}`}>{heading}</a>
+        <a href={`/polls/${id}`}>{heading}</a>
       </p>
       <p style={{ marginTop: "0" }}>{votesState} votes</p>
       <form onSubmit={handleSubmit}>
@@ -238,17 +238,19 @@ export const Poll = ({ poll, votedAnswers }) => {
         </span>
         {isError && <ErrorMessage message="You have to choose one option" />}
       </form>
-      <div className="question-footer">
-        <div className="question-wrapper">
-          <div className="question-info" style={{ width: "60%" }}>
-            <div>
-              <img src={comment} alt="likes" width="25px" height="21px" />
-              <span>{number_of_comments} comments</span>
-              <Tooltip id="like-tooltip" place="bottom" />
+      {commentsBarNeeded && (
+        <div className="question-footer">
+          <div className="question-wrapper">
+            <div className="question-info" style={{ width: "60%" }}>
+              <div>
+                <img src={comment} alt="likes" width="25px" height="21px" />
+                <span>{number_of_comments} comments</span>
+                <Tooltip id="like-tooltip" place="bottom" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
