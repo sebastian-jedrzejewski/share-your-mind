@@ -163,6 +163,10 @@ class SearchAPIView(generics.CreateAPIView):
                 result = Poll.objects.all().annotate(
                     **{order_by_map["votes"]: Sum("answers__votes")}
                 )
+            if "comments" in order_by_fields or "-comments" in order_by_fields:
+                result = Poll.objects.all().annotate(
+                    **{order_by_map["comments"]: Count("comments")}
+                )
 
         result = (
             result.filter(filter_expression).distinct().prefetch_related("categories")

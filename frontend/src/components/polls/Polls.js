@@ -1,6 +1,5 @@
 import { useState } from "react";
-import answer2 from "../../assets/answer2.png";
-import like from "../../assets/like.png";
+import comment from "../../assets/comment.png";
 import {
   getCategoryString,
   getCategoryListString,
@@ -13,6 +12,7 @@ import useSearchContent from "../../hooks/useSearchContent";
 import { Tooltip } from "react-tooltip";
 import CustomPagination from "../Pagination/CustomPagination";
 import { PAGE_SIZE } from "../../constants/common_constants";
+import useFetchData from "../../hooks/useFetchData";
 
 export const Polls = () => {
   const defaultSearchData = {
@@ -44,14 +44,19 @@ export const Polls = () => {
         setSearchData={setSearchData}
         searchFormState={searchFormState}
         setSearchFormState={setSearchFormState}
+        contentType={"poll"}
+        mostFilters={[
+          { id: "most-comments", name: "Most Comments" },
+          { id: "most-votes", name: "Most Votes" },
+        ]}
       />
       <div className="row">
-        {/* <div className="col-md-6 offset-md-3">
+        <div className="col-md-6 offset-md-3">
           <p className="results-count">{data?.count} results</p>
-          {data?.results?.map((question) => {
-            return <Question key={question.id} question={question} />;
+          {data?.results?.map((poll) => {
+            return <Poll key={poll.id} poll={poll} />;
           })}
-        </div> */}
+        </div>
       </div>
       {Math.ceil(data?.count / PAGE_SIZE) > 1 && (
         <CustomPagination
@@ -67,28 +72,29 @@ export const Polls = () => {
   );
 };
 
-export const Question = ({ question }) => {
+export const Poll = ({ poll }) => {
   const {
     id,
     created_at,
     author,
     heading,
-    short_description,
-    likes,
-    number_of_answers,
+    votes,
+    number_of_comments,
     categories,
-  } = question;
+  } = poll;
+
+  const { data, isLoading } = useFetchData(`/api/v1/polls/${id}/`);
+
+  if (isLoading) {
+    return null;
+  }
+
+  const answers = data?.answers;
 
   return (
     <div className="welcome-container question-box">
       <div className="row">
         <div className="col-md-6 author">
-          {/* <img
-            src={answer}
-            width="30px"
-            height="30px"
-            style={{ marginRight: "5px" }}
-          /> */}
           {author?.username}{" "}
           <span className="date">asked {getDateString(created_at)}</span>
         </div>
@@ -106,28 +112,42 @@ export const Question = ({ question }) => {
       <p className="question-heading">
         <a href={`/questions/${id}`}>{heading}</a>
       </p>
-      {short_description && (
-        <p
-          className="question-description"
-          dangerouslySetInnerHTML={{ __html: short_description }}
-        />
-      )}
+      <p style={{ marginTop: "0" }}>{votes} votes</p>
+      <div className="question-description">
+        {answers?.map((answer, index) => {
+          return (
+            <>
+              <div className="form-check vote-form-check">
+                <input
+                  className="form-check-input vote-check-input"
+                  type="radio"
+                  name={`radio${id}`}
+                  id={`flexRadio${id + index}`}
+                />
+                <label
+                  className="form-check-label vote-label"
+                  htmlFor={`flexRadio${id + index}`}
+                >
+                  {answer?.heading}
+                </label>
+              </div>
+            </>
+          );
+        })}
+      </div>
+      <button
+        className="btn btn-default link-button"
+        style={{ marginTop: "5px", marginBottom: "5px", fontSize: "1.2rem" }}
+      >
+        Vote
+      </button>
       <div className="question-footer">
         <div className="question-wrapper">
-          <div className="question-info">
+          <div className="question-info" style={{ width: "60%" }}>
             <div>
-              <img src={like} alt="likes" width="25px" height="21px" />
-              <span>
-                <span>{likes}</span> likes
-              </span>
-            </div>
-          </div>
-          <div className="question-info">
-            <div>
-              <img src={answer2} alt="answers" width="25px" height="23px" />
-              <span>
-                <span>{number_of_answers}</span> answers
-              </span>
+              <img src={comment} alt="likes" width="25px" height="21px" />
+              <span>{number_of_comments} comments</span>
+              <Tooltip id="like-tooltip" place="bottom" />
             </div>
           </div>
         </div>

@@ -129,6 +129,31 @@
   font-size: 2rem;
 }
 
+.vote-form-check {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.vote-check-input {
+  width: 20px;
+  height: 20px;
+}
+
+.vote-check-input:checked {
+  background-color: #964202;
+  border-color: #6b3b01;
+  box-shadow: 0 0 0 2px #6b3b01;
+}
+
+.vote-label {
+  width: 100%;
+  font-size: 1.2rem;
+  border: #964202 solid 2px;
+  padding: 5px;
+  margin-left: 5px;
+}
+
 @media (max-width: 768px) {
   .author {
     text-align: center;

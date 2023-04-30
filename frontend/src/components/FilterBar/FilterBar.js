@@ -4,7 +4,9 @@ import "./filterbar.css";
 import LoginModal, { showLoginModal } from "../modals/LoginModal";
 import {
   MOST_ANSWERS,
+  MOST_COMMENTS,
   MOST_LIKES,
+  MOST_VOTES,
   NEWEST,
 } from "../../constants/search_constants";
 import MultiSelect from "../forms/MulitSelect";
@@ -18,6 +20,8 @@ const FilterBar = ({
   setSearchData,
   searchFormState,
   setSearchFormState,
+  contentType,
+  mostFilters,
 }) => {
   const { user } = useFetchUser();
 
@@ -67,6 +71,10 @@ const FilterBar = ({
       document.getElementById("most-likes")?.classList.add("underlined");
     } else if (orderBy[0] === MOST_ANSWERS) {
       document.getElementById("most-answers")?.classList.add("underlined");
+    } else if (orderBy[0] === MOST_COMMENTS) {
+      document.getElementById("most-comments")?.classList.add("underlined");
+    } else if (orderBy[0] === MOST_VOTES) {
+      document.getElementById("most-votes")?.classList.add("underlined");
     }
 
     if (searchFormState.checkBoxChecked === true) {
@@ -95,6 +103,16 @@ const FilterBar = ({
       searchData?.order_by[0] !== MOST_ANSWERS
     ) {
       setSearchData({ ...searchData, order_by: [MOST_ANSWERS] });
+    } else if (
+      e?.target?.id === "most-comments" &&
+      searchData?.order_by[0] !== MOST_COMMENTS
+    ) {
+      setSearchData({ ...searchData, order_by: [MOST_COMMENTS] });
+    } else if (
+      e?.target?.id === "most-votes" &&
+      searchData?.order_by[0] !== MOST_VOTES
+    ) {
+      setSearchData({ ...searchData, order_by: [MOST_VOTES] });
     }
   };
 
@@ -145,21 +163,21 @@ const FilterBar = ({
             className="col-md-2 filter-block"
             onClick={changeOrder}
           >
-            Newest Questions
+            Newest {contentType.charAt(0).toUpperCase() + contentType.slice(1)}s
           </div>
           <div
-            id="most-answers"
+            id={mostFilters[0]?.id}
             className="col-md-2 filter-block"
             onClick={changeOrder}
           >
-            Most Answers
+            {mostFilters[0]?.name}
           </div>
           <div
-            id="most-likes"
+            id={mostFilters[1]?.id}
             className="col-md-2 filter-block"
             onClick={changeOrder}
           >
-            Most Likes
+            {mostFilters[1]?.name}
           </div>
           <div
             className="col-md-3 filter-block"
