@@ -8,6 +8,7 @@ import RegisterPage from "../pages/RegisterPage";
 import EditProfilePage from "../pages/EditProfilePage";
 import EditQuestionPage from "../pages/EditQuestionPage";
 import GuardedAuthorComponent from "./GuardedAuthorComponent";
+import { PollsPage } from "../pages/PollsPage";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "/edit-profile",
     element: <GuardedComponent component={EditProfilePage} />,
+  },
+  {
+    path: "/polls",
+    element: <GuardedComponent component={PollsPage} />,
   },
 ]);
 
