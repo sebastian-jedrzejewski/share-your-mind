@@ -152,6 +152,24 @@
   border: #964202 solid 2px;
   padding: 5px;
   margin-left: 5px;
+  position: relative;
+}
+
+.vote-label-text {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+}
+
+.vote-label-fill {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background-color: #dccab6;
+  z-index: 0;
 }
 
 @media (max-width: 768px) {

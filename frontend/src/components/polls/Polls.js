@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import comment from "../../assets/comment.png";
 import {
   getCategoryString,
@@ -13,6 +13,7 @@ import { Tooltip } from "react-tooltip";
 import CustomPagination from "../Pagination/CustomPagination";
 import { PAGE_SIZE } from "../../constants/common_constants";
 import useFetchData from "../../hooks/useFetchData";
+import apiCall from "../../api/axios";
 
 export const Polls = () => {
   const defaultSearchData = {
@@ -32,6 +33,7 @@ export const Polls = () => {
   const { data, isLoading } = useSearchContent(searchData);
 
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: votedAnswers } = useFetchData("/api/v1/voted_poll_answers/");
 
   if (isLoading) {
     return null;
@@ -54,7 +56,9 @@ export const Polls = () => {
         <div className="col-md-6 offset-md-3">
           <p className="results-count">{data?.count} results</p>
           {data?.results?.map((poll) => {
-            return <Poll key={poll.id} poll={poll} />;
+            return (
+              <Poll key={poll.id} poll={poll} votedAnswers={votedAnswers} />
+            );
           })}
         </div>
       </div>
@@ -72,7 +76,7 @@ export const Polls = () => {
   );
 };
 
-export const Poll = ({ poll }) => {
+export const Poll = ({ poll, votedAnswers }) => {
   const {
     id,
     created_at,
@@ -83,13 +87,57 @@ export const Poll = ({ poll }) => {
     categories,
   } = poll;
 
-  const { data, isLoading } = useFetchData(`/api/v1/polls/${id}/`);
+  const { data } = useFetchData(`/api/v1/polls/${id}/`);
 
-  if (isLoading) {
-    return null;
-  }
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const markPollAsVoted = (selectedAnswer) => {
+    let radioButton, answer, answerFill, percentage;
+    for (let i = 0; i < answers?.length; i++) {
+      radioButton = document.querySelector(`#flexRadio${answers[i]?.id}`);
+      answer = document.querySelector(
+        `#flexRadio${answers[i]?.id} + .vote-label .vote-label-text`
+      );
+      answerFill = document.querySelector(
+        `#flexRadio${answers[i]?.id} + .vote-label .vote-label-fill`
+      );
+
+      if (answer && answerFill) {
+        percentage = (100 * answers[i]?.votes) / votes;
+        answer.innerHTML += ` (${percentage}%)`;
+        answerFill.style.width = `${percentage}%`;
+      }
+
+      console.log(answers[i]?.id, selectedAnswer);
+      if (answers[i]?.id + "" === selectedAnswer + "") {
+        setSelectedOption(answers[i]?.id + "");
+        radioButton.checked = true;
+      }
+      radioButton.disabled = true;
+      document.getElementById(`vote${id}`).disabled = true;
+    }
+  };
 
   const answers = data?.answers;
+  useEffect(() => {
+    for (let i = 0; i < answers?.length; i++) {
+      if (votedAnswers?.voted_poll_answers_ids?.includes(answers[i]?.id)) {
+        markPollAsVoted(answers[i]?.id);
+        break;
+      }
+    }
+  }, [answers]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    apiCall.post(`/api/v1/poll_answers/${selectedOption}/vote/`);
+
+    markPollAsVoted(selectedOption);
+  };
+
+  const onValueChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
 
   return (
     <div className="welcome-container question-box">
@@ -113,34 +161,42 @@ export const Poll = ({ poll }) => {
         <a href={`/questions/${id}`}>{heading}</a>
       </p>
       <p style={{ marginTop: "0" }}>{votes} votes</p>
-      <div className="question-description">
-        {answers?.map((answer, index) => {
-          return (
-            <>
-              <div className="form-check vote-form-check">
-                <input
-                  className="form-check-input vote-check-input"
-                  type="radio"
-                  name={`radio${id}`}
-                  id={`flexRadio${id + index}`}
-                />
-                <label
-                  className="form-check-label vote-label"
-                  htmlFor={`flexRadio${id + index}`}
-                >
-                  {answer?.heading}
-                </label>
-              </div>
-            </>
-          );
-        })}
-      </div>
-      <button
-        className="btn btn-default link-button"
-        style={{ marginTop: "5px", marginBottom: "5px", fontSize: "1.2rem" }}
-      >
-        Vote
-      </button>
+      <form onSubmit={handleSubmit}>
+        <div className="question-description">
+          {answers?.map((answer) => {
+            return (
+              <>
+                <div className="form-check vote-form-check">
+                  <input
+                    className="form-check-input vote-check-input"
+                    type="radio"
+                    name={`radio${id}`}
+                    value={answer?.id}
+                    id={`flexRadio${answer?.id}`}
+                    checked={selectedOption === answer?.id + ""}
+                    onChange={onValueChange}
+                  />
+                  <label
+                    className="form-check-label vote-label"
+                    htmlFor={`flexRadio${answer?.id}`}
+                  >
+                    <span className="vote-label-text">{answer?.heading}</span>
+                    <span className="vote-label-fill"></span>
+                  </label>
+                </div>
+              </>
+            );
+          })}
+        </div>
+        <button
+          className="btn btn-default link-button"
+          style={{ marginTop: "5px", marginBottom: "5px", fontSize: "1.2rem" }}
+          type="submit"
+          id={`vote${id}`}
+        >
+          Vote
+        </button>
+      </form>
       <div className="question-footer">
         <div className="question-wrapper">
           <div className="question-info" style={{ width: "60%" }}>

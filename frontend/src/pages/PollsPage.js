@@ -14,7 +14,7 @@ export const PollsPage = () => {
   return (
     <>
       <ErrorModal />
-      <Navbar user={user} isLoading={isLoading} activeLink={"questions-link"} />
+      <Navbar user={user} isLoading={isLoading} activeLink={"polls-link"} />
       <Polls />
       <Footer />
     </>
@@ -29,7 +29,7 @@ export const SinglePollPage = () => {
   return (
     <>
       <ErrorModal />
-      <Navbar user={user} isLoading={isLoading} activeLink={"questions-link"} />
+      <Navbar user={user} isLoading={isLoading} activeLink={"polls-link"} />
       <SingleQuestion />
       <Footer />
     </>
