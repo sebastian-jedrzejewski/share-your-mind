@@ -7,7 +7,7 @@ from shareyourmind.common.search_content import SearchAPIView
 from shareyourmind.polls.api.views import (
     PollViewSet,
     PollAnswerViewSet,
-    PollCommentViewSet,
+    PollCommentViewSet, UserVotedPollAnswerAPIView,
 )
 from shareyourmind.questions.api.views import (
     QuestionViewSet,
@@ -42,6 +42,11 @@ urlpatterns = [
         "api/v1/liked_answers/",
         UserLikedAnswerAPIView.as_view(),
         name="user_liked_answers",
+    ),
+    path(
+        "api/v1/voted_poll_answers/",
+        UserVotedPollAnswerAPIView.as_view(),
+        name="user_voted_poll_answers",
     ),
     path("api/v1/search/", SearchAPIView.as_view(), name="search"),
 ]
