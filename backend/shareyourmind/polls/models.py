@@ -87,3 +87,22 @@ class UserVotedPollAnswer(models.Model):
 
     def __str__(self):
         return f"ID: {self.id}, user: {self.user}, poll_answer: {self.poll_answer}"
+
+
+class UserLikedPollComment(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="liked_comments",
+    )
+    poll_comment = models.ForeignKey(
+        "polls.PollComment",
+        on_delete=models.CASCADE,
+        related_name="liked_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "poll_comment"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, poll_comment: {self.poll_comment}"

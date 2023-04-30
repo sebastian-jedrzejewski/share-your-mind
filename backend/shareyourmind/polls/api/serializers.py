@@ -8,101 +8,6 @@ from shareyourmind.polls.models import Poll, PollAnswer, PollComment
 from shareyourmind.users.api.serializers import UserSerializer
 
 
-class PollAnswerSerializer(serializers.ModelSerializer):
-    author = UserSerializer()
-
-    class Meta:
-        model = PollAnswer
-        fields = [
-            "id",
-            "poll_id",
-            "created_at",
-            "updated_at",
-            "author",
-            "heading",
-            "votes",
-        ]
-
-
-class PollAnswerCreateSerializer(serializers.ModelSerializer):
-    poll_id = serializers.PrimaryKeyRelatedField(
-        queryset=Poll.objects.all(),
-        source="poll",
-        required=False,
-    )
-
-    class Meta:
-        model = PollAnswer
-        fields = [
-            "id",
-            "heading",
-            "poll_id",
-        ]
-
-
-class PollListSerializer(serializers.ModelSerializer):
-    author = UserSerializer()
-    categories = CategorySerializer(many=True)
-
-    class Meta:
-        model = Poll
-        fields = [
-            "id",
-            "created_at",
-            "author",
-            "heading",
-            "votes",
-            "number_of_comments",
-            "categories",
-        ]
-
-
-class PollDetailSerializer(PollListSerializer):
-    answers = PollAnswerSerializer(many=True)
-
-    class Meta(PollListSerializer.Meta):
-        fields = PollListSerializer.Meta.fields + ["answers", "updated_at"]
-
-    def to_representation(self, instance):
-        result = super().to_representation(instance)
-        for answer in result["answers"]:
-            answer.pop("author")
-        return result
-
-
-class PollCreateSerializer(serializers.ModelSerializer):
-    categories_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.filter(is_active=True),
-        source="categories",
-        many=True,
-        allow_empty=False,
-    )
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = Poll
-        fields = ["id", "heading", "categories_id", "author"]
-
-
-class PollWithAnswersCreateSerializer(PollCreateSerializer):
-    answers = PollAnswerCreateSerializer(many=True)
-
-    class Meta(PollCreateSerializer.Meta):
-        model = Poll
-        fields = PollCreateSerializer.Meta.fields + ["answers"]
-
-    def create(self, validated_data):
-        answers = validated_data.pop("answers", None)
-        PollAnswerCreateSerializer(data=answers, many=True).is_valid(
-            raise_exception=True
-        )
-        poll = super().create(validated_data)
-
-        for answer_data in answers:
-            PollAnswer.objects.create(heading=answer_data["heading"], poll_id=poll.id)
-        return poll
-
-
 class PollCommentListSerializer(serializers.ModelSerializer):
     author = UserSerializer()
 
@@ -159,3 +64,99 @@ class PollCommentCreateSerializer(serializers.ModelSerializer):
         if strip_tags(body) == "":
             raise serializers.ValidationError(["This field may not be blank."])
         return body
+
+
+class PollAnswerSerializer(serializers.ModelSerializer):
+    author = UserSerializer()
+
+    class Meta:
+        model = PollAnswer
+        fields = [
+            "id",
+            "poll_id",
+            "created_at",
+            "updated_at",
+            "author",
+            "heading",
+            "votes",
+        ]
+
+
+class PollAnswerCreateSerializer(serializers.ModelSerializer):
+    poll_id = serializers.PrimaryKeyRelatedField(
+        queryset=Poll.objects.all(),
+        source="poll",
+        required=False,
+    )
+
+    class Meta:
+        model = PollAnswer
+        fields = [
+            "id",
+            "heading",
+            "poll_id",
+        ]
+
+
+class PollListSerializer(serializers.ModelSerializer):
+    author = UserSerializer()
+    categories = CategorySerializer(many=True)
+
+    class Meta:
+        model = Poll
+        fields = [
+            "id",
+            "created_at",
+            "author",
+            "heading",
+            "votes",
+            "number_of_comments",
+            "categories",
+        ]
+
+
+class PollDetailSerializer(PollListSerializer):
+    answers = PollAnswerSerializer(many=True)
+    comments = PollCommentDetailSerializer(many=True)
+
+    class Meta(PollListSerializer.Meta):
+        fields = PollListSerializer.Meta.fields + ["answers", "comments", "updated_at"]
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        for answer in result["answers"]:
+            answer.pop("author")
+        return result
+
+
+class PollCreateSerializer(serializers.ModelSerializer):
+    categories_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.filter(is_active=True),
+        source="categories",
+        many=True,
+        allow_empty=False,
+    )
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Poll
+        fields = ["id", "heading", "categories_id", "author"]
+
+
+class PollWithAnswersCreateSerializer(PollCreateSerializer):
+    answers = PollAnswerCreateSerializer(many=True)
+
+    class Meta(PollCreateSerializer.Meta):
+        model = Poll
+        fields = PollCreateSerializer.Meta.fields + ["answers"]
+
+    def create(self, validated_data):
+        answers = validated_data.pop("answers", None)
+        PollAnswerCreateSerializer(data=answers, many=True).is_valid(
+            raise_exception=True
+        )
+        poll = super().create(validated_data)
+
+        for answer_data in answers:
+            PollAnswer.objects.create(heading=answer_data["heading"], poll_id=poll.id)
+        return poll

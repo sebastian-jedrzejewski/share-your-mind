@@ -88,7 +88,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
             return [AllowAny()]
-        elif self.action in ["create", "like"]:
+        elif self.action in ["create", "like", "dislike"]:
             return [IsAuthenticated()]
         else:
             return super().get_permissions()
