@@ -43,14 +43,18 @@ class CurrentUserSerializer(UserSerializer):
     def update(self, instance, validated_data):
         favourite_categories = validated_data.pop("favourite_categories", None)
         if favourite_categories is not None:
-            favourite_categories_id = [category["id"] for category in favourite_categories]
+            favourite_categories_id = [
+                category["id"] for category in favourite_categories
+            ]
             instance.favourite_categories.set(favourite_categories_id)
         return super().update(instance, validated_data)
 
     def validate_favourite_categories(self, categories):
         for category in categories:
             if not category.get("id", None):
-                raise serializers.ValidationError("Each category data must have contain id")
+                raise serializers.ValidationError(
+                    "Each category data must have contain id"
+                )
         return categories
 
 

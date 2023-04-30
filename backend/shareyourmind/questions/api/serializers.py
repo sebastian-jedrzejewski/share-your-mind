@@ -38,7 +38,7 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
 class AnswerCreateSerializer(serializers.ModelSerializer):
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     question_id = serializers.PrimaryKeyRelatedField(
-        queryset=Question.objects.filter(),
+        queryset=Question.objects.all(),
         source="question",
         allow_empty=False,
         allow_null=False,
@@ -55,9 +55,9 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_body(self, body):
-        body = strip_tags(body)
-        if body == "":
+        if strip_tags(body) == "":
             raise serializers.ValidationError(["This field may not be blank."])
+        return body
 
 
 class QuestionListSerializer(serializers.ModelSerializer):
@@ -102,7 +102,9 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
         return mark_safe(obj.description)
 
     def get_answers(self, obj):
-        answers = obj.answers.all().order_by("-likes", "created_at__date", "-updated_at")
+        answers = obj.answers.all().order_by(
+            "-likes", "created_at__date", "-updated_at"
+        )
         return AnswerDetailSerializer(answers, many=True).data
 
 

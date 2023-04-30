@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "shareyourmind.users.apps.UsersConfig",
     "shareyourmind.common.apps.CommonConfig",
     "shareyourmind.questions.apps.QuestionsConfig",
+    "shareyourmind.polls.apps.PollsConfig",
 ]
 
 MIDDLEWARE = [
@@ -144,7 +145,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'PAGE_SIZE': 20,
+    "PAGE_SIZE": 20,
 }
 
 SIMPLE_JWT = {
