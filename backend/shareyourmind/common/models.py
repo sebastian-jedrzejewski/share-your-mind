@@ -1,4 +1,6 @@
+from ckeditor.fields import RichTextField
 from django.db import models
+from django.utils.safestring import mark_safe
 
 
 class Category(models.Model):
@@ -22,6 +24,19 @@ class PublishedContentMixin(models.Model):
     likes = models.PositiveIntegerField(default=0)
 
     author = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        abstract = True
+
+
+class CommentMixin(PublishedContentMixin):
+    body = RichTextField()
+
+    @property
+    def short_body(self):
+        if (len(self.body.__str__())) > 100:
+            return self.body.__str__()[:100] + "..."
+        return mark_safe(self.body.__str__())
 
     class Meta:
         abstract = True
