@@ -1,13 +1,13 @@
 from django.core.exceptions import FieldError
-from django.db.models import Q, Count
-from rest_framework import generics, serializers, status
+from django.db.models import Q, Count, Sum
+from rest_framework import generics, serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 
 from shareyourmind.common.api.serializers import CategorySerializer
 from shareyourmind.common.content_types_constants import OBJECT_CONTENT_TYPES
 from shareyourmind.common.utils import get_category_choices
+from shareyourmind.polls.models import Poll
 from shareyourmind.questions.models import Question
 from shareyourmind.users.api.serializers import UserSerializer
 
@@ -52,7 +52,9 @@ class MetadataItemSerializer(serializers.Serializer):
     heading = serializers.CharField()
     short_description = serializers.SerializerMethodField(required=False)
     likes = serializers.IntegerField(required=False)
+    votes = serializers.IntegerField(required=False)
     number_of_answers = serializers.SerializerMethodField(required=False)
+    number_of_comments = serializers.SerializerMethodField(required=False)
     categories = CategorySerializer(many=True)
 
     def get_short_description(self, obj):
@@ -62,6 +64,10 @@ class MetadataItemSerializer(serializers.Serializer):
     def get_number_of_answers(self, obj):
         if hasattr(obj, "number_of_answers"):
             return obj.number_of_answers
+
+    def get_number_of_comments(self, obj):
+        if hasattr(obj, "number_of_comments"):
+            return obj.number_of_comments
 
 
 class SearchAPIView(generics.CreateAPIView):
@@ -96,8 +102,12 @@ class SearchAPIView(generics.CreateAPIView):
         query = search_data.pop("query", None)
         order_by_fields = search_data.pop("order_by", [])
 
+        use_questions = False
+        use_polls = False
         if object_content_type == Question.OBJECT_CONTENT_TYPE:
             use_questions = True
+        elif object_content_type == Poll.OBJECT_CONTENT_TYPE:
+            use_polls = True
         else:
             raise NotImplementedError
 
@@ -121,6 +131,8 @@ class SearchAPIView(generics.CreateAPIView):
                 filter_expression &= Q(heading__icontains=query) | Q(
                     description__icontains=query
                 )
+            elif use_polls:
+                filter_expression &= Q(heading__icontains=query)
 
         order_by = []
         for order_by_field in order_by_fields:
@@ -145,16 +157,20 @@ class SearchAPIView(generics.CreateAPIView):
                 result = Question.objects.all().annotate(
                     **{order_by_map["answers"]: Count("answers")}
                 )
+        elif use_polls:
+            result = Poll.objects.all()
+            if "votes" in order_by_fields or "-votes" in order_by_fields:
+                result = Poll.objects.all().annotate(
+                    **{order_by_map["votes"]: Sum("answers__votes")}
+                )
 
-            result = (
-                result.filter(filter_expression)
-                .distinct()
-                .prefetch_related("categories")
-            )
-            if order_by:
-                try:
-                    result = result.order_by(*order_by)
-                except FieldError:
-                    raise serializers.ValidationError({"order_by": "Illegal key used."})
+        result = (
+            result.filter(filter_expression).distinct().prefetch_related("categories")
+        )
+        if order_by:
+            try:
+                result = result.order_by(*order_by)
+            except FieldError:
+                raise serializers.ValidationError({"order_by": "Illegal key used."})
 
         return result
