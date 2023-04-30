@@ -165,9 +165,7 @@ class SearchAPIView(generics.CreateAPIView):
                 )
 
         result = (
-            result.filter(filter_expression)
-            .distinct()
-            .prefetch_related("categories")
+            result.filter(filter_expression).distinct().prefetch_related("categories")
         )
         if order_by:
             try:
