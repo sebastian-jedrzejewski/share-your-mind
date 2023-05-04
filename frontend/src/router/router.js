@@ -9,6 +9,7 @@ import EditProfilePage from "../pages/EditProfilePage";
 import EditQuestionPage from "../pages/EditQuestionPage";
 import GuardedAuthorComponent from "./GuardedAuthorComponent";
 import { PollsPage, SinglePollPage } from "../pages/PollsPage";
+import CreatePollPage from "../pages/CreatePollPage";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: "/polls/:id",
     element: <GuardedComponent component={SinglePollPage} />,
+  },
+  {
+    path: "/create-poll",
+    element: <GuardedComponent component={CreatePollPage} />,
   },
 ]);
 

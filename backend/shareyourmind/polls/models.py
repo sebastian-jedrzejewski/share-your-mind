@@ -10,7 +10,7 @@ from shareyourmind.common.models import (
 class Poll(PublishedContentMixin, ObjectContentTypeMixin):
     OBJECT_CONTENT_TYPE = "poll"
 
-    heading = models.TextField(max_length=400)
+    heading = models.TextField(max_length=200)
 
     likes = None
 
