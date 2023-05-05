@@ -13,7 +13,7 @@ const EditPollPage = () => {
   return (
     <>
       <ErrorModal />
-      <Navbar user={user} isLoading={isLoading} />
+      <Navbar user={user} isLoading={isLoading} activeLink={"polls-link"} />
       <EditPoll />
       <Footer />
     </>
