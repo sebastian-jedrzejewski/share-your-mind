@@ -1,11 +1,7 @@
+import "./polls.css";
 import { useParams } from "react-router-dom";
-import {
-  getCategoryString,
-  getCategoryListString,
-  getDateString,
-} from "../questions/utils";
+import { getDateString } from "../questions/utils";
 import useFetchData from "../../hooks/useFetchData";
-import like from "../../assets/like.png";
 import { useEffect, useState } from "react";
 import RichTextField, {
   RichTextFieldWithContent,
@@ -14,7 +10,6 @@ import { isAuthenticated } from "../../auth/auth";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
 import LoginModal, { showLoginModal } from "../modals/LoginModal";
-import { Tooltip } from "react-tooltip";
 import useFetchUser from "../../hooks/useFetchUser";
 import DeleteModal, { showDeleteModal } from "../modals/DeleteModal";
 import { ContentLikes } from "../questions/SingleQuestion";
@@ -26,6 +21,8 @@ export const SinglePoll = () => {
   const { data: votedAnswers } = useFetchData("/api/v1/voted_poll_answers/");
   const { user } = useFetchUser();
 
+  const [showEdit, setShowEdit] = useState(false);
+
   const [commentState, setCommentState] = useState({
     initialCommentContent: "",
     commentContent: "",
@@ -33,46 +30,47 @@ export const SinglePoll = () => {
     commentId: "",
   });
 
+  useEffect(() => {
+    if (!isLoading) {
+      const { author } = data;
+      if (user?.username === author?.username) {
+        setShowEdit(true);
+      } else {
+        setShowEdit(false);
+      }
+    }
+  }, [isLoading, data, user?.username]);
+
   if (isLoading) {
     return null;
   }
 
   const poll = data;
-  const {
-    created_at,
-    updated_at,
-    votes,
-    author,
-    heading,
-    categories,
-    answers,
-    comments,
-  } = poll;
+  const { comments } = poll;
 
-  //   const deleteQuestion = (id) => {
-  //     apiCall.delete(`/api/v1/questions/${id}`);
-  //     window.location.href = "/questions";
-  //   };
+  const deletePoll = (id) => {
+    apiCall.delete(`/api/v1/polls/${id}/`);
+    window.location.href = "/polls";
+  };
 
   return (
     <div className="container main-content">
       <LoginModal />
-      {/* <DeleteModal contentType={"question"} modalId={"question-delete-modal"} /> */}
-      {/* <DeleteModal contentType={"answer"} modalId={"answer-delete-modal"} /> */}
+      <DeleteModal contentType={"poll"} modalId={"poll-delete-modal"} />
+      <DeleteModal contentType={"comment"} modalId={"comment-delete-modal"} />
       <div className="row">
         <div className="col-md-8 offset-md-2">
           <Poll
             poll={poll}
             votedAnswers={votedAnswers}
             commentsBarNeeded={false}
+            showEdit={showEdit}
+            editContent={{
+              deleteModalId: "poll-delete-modal",
+              deleteAction: deletePoll,
+              contentId: id,
+            }}
           />
-          {/* {user?.username === author?.username && (
-              <EditDelete
-                deleteModalId={"question-delete-modal"}
-                deleteAction={deleteQuestion}
-                contentId={id}
-              />
-            )} */}
 
           <p className="answer-note">
             {comments?.length} {comments?.length === 1 ? "Comment" : "Comments"}
@@ -82,7 +80,7 @@ export const SinglePoll = () => {
             <div className="welcome-container question-box">
               {comments.map((comment, index) => {
                 return (
-                  <>
+                  <span key={comment.id}>
                     <Comment
                       key={comment.id}
                       user={user}
@@ -96,7 +94,7 @@ export const SinglePoll = () => {
                         <hr></hr>
                       </>
                     )}
-                  </>
+                  </span>
                 );
               })}
             </div>
@@ -113,14 +111,74 @@ export const SinglePoll = () => {
   );
 };
 
+export const EditDelete = ({
+  deleteModalId,
+  deleteAction,
+  contentId,
+  commentState,
+  setCommentState,
+}) => {
+  const { data } = useFetchData(
+    deleteModalId.startsWith("poll")
+      ? `/api/v1/polls/${contentId}`
+      : `/api/v1/poll_comments/${contentId}`
+  );
+
+  const goToEditPage = () => {
+    window.location.href = `/edit-poll/${contentId}`;
+  };
+
+  const scrollToEditComment = () => {
+    const yourPollComment = document.getElementById("your-poll-comment");
+    if (yourPollComment) {
+      yourPollComment.scrollIntoView({ behavior: "smooth" });
+    }
+    const commentToPoll = document.getElementById("comment-to-poll");
+    if (commentToPoll) {
+      commentToPoll.innerHTML = "Save changes";
+    }
+    const cancelEditing = document.getElementById("cancel-editing");
+    if (cancelEditing) {
+      cancelEditing.style.display = "inline-block";
+    }
+    setCommentState({
+      isCommentModified: true,
+      commentId: contentId,
+      commentContent: data?.body,
+      initialCommentContent: data?.body,
+    });
+  };
+
+  return (
+    <div className="poll-edit-delete">
+      <button
+        onClick={
+          deleteModalId.startsWith("poll") ? goToEditPage : scrollToEditComment
+        }
+        className="btn btn-primary"
+        style={{ marginRight: "20px", fontSize: "1.2rem" }}
+      >
+        Edit
+      </button>
+      <button
+        onClick={() => showDeleteModal(deleteModalId, deleteAction, contentId)}
+        className="btn btn-danger"
+        style={{ fontSize: "1.2rem" }}
+      >
+        Delete
+      </button>
+    </div>
+  );
+};
+
 export const Comment = ({ user, comment, commentState, setCommentState }) => {
   const { id, created_at, updated_at, likes, author, body } = comment;
 
-  //   const deleteAnswer = (id) => {
-  //     apiCall
-  //       .delete(`/api/v1/answers/${id}`)
-  //       .then(() => document.location.reload());
-  //   };
+  const deleteComment = (id) => {
+    apiCall
+      .delete(`/api/v1/poll_comments/${id}/`)
+      .then(() => document.location.reload());
+  };
 
   return (
     <>
@@ -147,15 +205,15 @@ export const Comment = ({ user, comment, commentState, setCommentState }) => {
         contentId={id}
       />
 
-      {/* {user?.username === author?.username && (
+      {user?.username === author?.username && (
         <EditDelete
-          deleteModalId={"answer-delete-modal"}
-          deleteAction={deleteAnswer}
+          deleteModalId={"comment-delete-modal"}
+          deleteAction={deleteComment}
           contentId={id}
-          answerState={answerState}
-          setAnswerState={setAnswerState}
+          commentState={commentState}
+          setCommentState={setCommentState}
         />
-      )} */}
+      )}
     </>
   );
 };
@@ -164,62 +222,62 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ body: "" });
 
-  // useEffect(() => {
-  //   if (answerState?.isAnswerModified === false) {
-  //     document.getElementById("answer-to-question").innerHTML = "Answer";
-  //   }
-  // }, [answerState?.isAnswerModified]);
+  useEffect(() => {
+    if (commentState?.isCommentModified === false) {
+      document.getElementById("comment-to-poll").innerHTML = "Comment";
+    }
+  }, [commentState?.isCommentModified]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isAuthenticated()) {
-      // if (!answerState?.isAnswerModified) {
-      apiCall
-        .post("/api/v1/poll_comments/", {
-          poll_id: pollId,
-          body: commentState?.commentContent,
-        })
-        .then(() => {
-          setIsSuccess(true);
-          setTimeout(() => {
-            setIsSuccess(false);
-          }, 3000);
-          setCommentContent("");
-          setErrorMessage({ body: "" });
-          setCommentState({
-            ...commentState,
-            isCommentModified: false,
-            initialCommentContent: "<p></p>",
+      if (!commentState?.isCommentModified) {
+        apiCall
+          .post("/api/v1/poll_comments/", {
+            poll_id: pollId,
+            body: commentState?.commentContent,
+          })
+          .then(() => {
+            setIsSuccess(true);
+            setTimeout(() => {
+              setIsSuccess(false);
+            }, 3000);
+            setCommentContent("");
+            setErrorMessage({ body: "" });
+            setCommentState({
+              ...commentState,
+              isCommentModified: false,
+              initialCommentContent: "<p></p>",
+            });
+          })
+          .catch((error) => {
+            setErrorMessage({ ...error.response.data });
+            console.log(error.response.data);
           });
-        })
-        .catch((error) => {
-          setErrorMessage({ ...error.response.data });
-          console.log(error.response.data);
-        });
-      // } else {
-      //   apiCall
-      //     .patch(`/api/v1/answers/${answerState?.answerId}/`, {
-      //       body: answerState?.answerContent,
-      //     })
-      //     .then(() => {
-      //       setIsSuccess(true);
-      //       setTimeout(() => {
-      //         setIsSuccess(false);
-      //       }, 3000);
-      //       setAnswerContent("");
-      //       setErrorMessage({ body: "" });
-      //       setAnswerState({
-      //         ...answerState,
-      //         isAnswerModified: false,
-      //         initialAnswerContent: "",
-      //       });
-      //     })
-      //     .catch((error) => {
-      //       setErrorMessage({ ...error.response.data });
-      //       console.log(error.response.data);
-      //     });
-      // }
-      //   document.getElementById("cancel-editing").style.display = "none";
+      } else {
+        apiCall
+          .patch(`/api/v1/poll_comments/${commentState?.commentId}/`, {
+            body: commentState?.commentContent,
+          })
+          .then(() => {
+            setIsSuccess(true);
+            setTimeout(() => {
+              setIsSuccess(false);
+            }, 3000);
+            setCommentContent("");
+            setErrorMessage({ body: "" });
+            setCommentState({
+              ...commentState,
+              isCommentModified: false,
+              initialCommentContent: "",
+            });
+          })
+          .catch((error) => {
+            setErrorMessage({ ...error.response.data });
+            console.log(error.response.data);
+          });
+      }
+      document.getElementById("cancel-editing").style.display = "none";
     } else {
       showLoginModal();
     }
@@ -229,19 +287,19 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
     setCommentState({ ...commentState, commentContent: commentContent });
   };
 
-  //   const cancelEditing = (e) => {
-  //     setAnswerState({
-  //       ...answerState,
-  //       isAnswerModified: false,
-  //       initialAnswerContent: "",
-  //     });
-  //     e.target.style.display = "none";
-  //   };
+  const cancelEditing = (e) => {
+    setCommentState({
+      ...commentState,
+      isCommentModified: false,
+      initialCommentContent: "",
+    });
+    e.target.style.display = "none";
+  };
 
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <p className="answer-note" id="your-answer">
+        <p className="answer-note" id="your-poll-comment">
           Your Comment
         </p>
         {commentState?.initialCommentContent === "" ? (
@@ -264,11 +322,11 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
             fontSize: "1.4rem",
           }}
           type="submit"
-          id="answer-to-question"
+          id="comment-to-poll"
         >
           Comment
         </button>
-        {/* <button
+        <button
           className="btn btn-default link-button"
           style={{
             marginTop: "0",
@@ -282,7 +340,7 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
           onClick={cancelEditing}
         >
           Cancel
-        </button> */}
+        </button>
         {isSuccess && (
           <p
             className="message-success mt-3"

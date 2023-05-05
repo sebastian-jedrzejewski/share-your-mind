@@ -184,7 +184,7 @@ export const ContentLikes = ({
         }
       });
     }
-  }, [isLiked, contentId, contentType]);
+  }, [isLiked, contentId, contentType, contentText]);
 
   const LikeOrDislike = () => {
     if (isAuthenticated()) {

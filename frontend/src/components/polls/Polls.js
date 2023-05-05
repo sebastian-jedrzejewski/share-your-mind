@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import comment from "../../assets/comment.png";
 import {
   getCategoryString,
@@ -15,6 +15,7 @@ import { PAGE_SIZE } from "../../constants/common_constants";
 import useFetchData from "../../hooks/useFetchData";
 import apiCall from "../../api/axios";
 import { ErrorMessage } from "../forms/FormControls";
+import { EditDelete } from "./SinglePoll";
 
 export const Polls = () => {
   const defaultSearchData = {
@@ -78,7 +79,13 @@ export const Polls = () => {
   );
 };
 
-export const Poll = ({ poll, votedAnswers, commentsBarNeeded = true }) => {
+export const Poll = ({
+  poll,
+  votedAnswers,
+  commentsBarNeeded = true,
+  showEdit = false,
+  editContent = {},
+}) => {
   const {
     id,
     created_at,
@@ -95,50 +102,57 @@ export const Poll = ({ poll, votedAnswers, commentsBarNeeded = true }) => {
   const [isError, setIsError] = useState(false);
   const [votesState, setVotesState] = useState(votes);
 
-  const markPollAsVoted = (selectedAnswer, hasBeenJustVoted) => {
-    let radioButton, answer, answerFill, percentage;
-    for (let i = 0; i < answers?.length; i++) {
-      radioButton = document.querySelector(`#flexRadio${answers[i]?.id}`);
-      answer = document.querySelector(
-        `#flexRadio${answers[i]?.id} + .vote-label .vote-label-text`
-      );
-      answerFill = document.querySelector(
-        `#flexRadio${answers[i]?.id} + .vote-label .vote-label-fill`
-      );
+  const answers = data?.answers;
 
-      if (answer && answerFill) {
-        if (hasBeenJustVoted) {
-          if (answers[i]?.id + "" === selectedAnswer + "") {
-            percentage = (100 * (answers[i]?.votes + 1)) / (votes + 1);
+  const markPollAsVoted = useCallback(
+    (selectedAnswer, hasBeenJustVoted) => {
+      let radioButton, answer, answerFill, percentage;
+      for (let i = 0; i < answers?.length; i++) {
+        radioButton = document.querySelector(`#flexRadio${answers[i]?.id}`);
+        answer = document.querySelector(
+          `#flexRadio${answers[i]?.id} + .vote-label .vote-label-text`
+        );
+        answerFill = document.querySelector(
+          `#flexRadio${answers[i]?.id} + .vote-label .vote-label-fill`
+        );
+
+        if (answer && answerFill) {
+          if (hasBeenJustVoted) {
+            if (answers[i]?.id + "" === selectedAnswer + "") {
+              percentage = (100 * (answers[i]?.votes + 1)) / (votes + 1);
+            } else {
+              percentage = (100 * answers[i]?.votes) / (votes + 1);
+            }
           } else {
-            percentage = (100 * answers[i]?.votes) / (votes + 1);
+            if (answers[i]?.id + "" === selectedAnswer + "") {
+              percentage = (100 * answers[i]?.votes) / votes;
+            } else {
+              percentage = (100 * answers[i]?.votes) / votes;
+            }
           }
-        } else {
-          if (answers[i]?.id + "" === selectedAnswer + "") {
-            percentage = (100 * answers[i]?.votes) / votes;
-          } else {
-            percentage = (100 * answers[i]?.votes) / votes;
-          }
+
+          percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
+          answer.innerHTML += ` (${percentage}%)`;
+          answerFill.style.width = `${percentage}%`;
         }
 
-        percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
-        answer.innerHTML += ` (${percentage}%)`;
-        answerFill.style.width = `${percentage}%`;
+        if (answers[i]?.id + "" === selectedAnswer + "") {
+          setSelectedOption(answers[i]?.id + "");
+          radioButton.checked = true;
+        }
+        radioButton.disabled = true;
+        document.getElementById(`vote${id}`).disabled = true;
+        document
+          .getElementById(`vote-button-${id}`)
+          .setAttribute(
+            "data-tooltip-content",
+            "You already voted in this poll"
+          );
       }
+    },
+    [answers, id, votes]
+  );
 
-      if (answers[i]?.id + "" === selectedAnswer + "") {
-        setSelectedOption(answers[i]?.id + "");
-        radioButton.checked = true;
-      }
-      radioButton.disabled = true;
-      document.getElementById(`vote${id}`).disabled = true;
-      document
-        .getElementById(`vote-button-${id}`)
-        .setAttribute("data-tooltip-content", "You already voted in this poll");
-    }
-  };
-
-  const answers = data?.answers;
   useEffect(() => {
     for (let i = 0; i < answers?.length; i++) {
       if (votedAnswers?.voted_poll_answers_ids?.includes(answers[i]?.id)) {
@@ -146,7 +160,7 @@ export const Poll = ({ poll, votedAnswers, commentsBarNeeded = true }) => {
         break;
       }
     }
-  }, [answers]);
+  }, [answers, markPollAsVoted, votedAnswers?.voted_poll_answers_ids]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -227,7 +241,7 @@ export const Poll = ({ poll, votedAnswers, commentsBarNeeded = true }) => {
             className="btn btn-default link-button"
             style={{
               marginTop: "5px",
-              marginBottom: "5px",
+              marginBottom: showEdit ? "0" : "5px",
               fontSize: "1.2rem",
             }}
             type="submit"
@@ -250,6 +264,13 @@ export const Poll = ({ poll, votedAnswers, commentsBarNeeded = true }) => {
             </div>
           </div>
         </div>
+      )}
+      {showEdit && (
+        <EditDelete
+          deleteModalId={editContent?.deleteModalId}
+          deleteAction={editContent?.deleteAction}
+          contentId={editContent?.contentId}
+        />
       )}
     </div>
   );
