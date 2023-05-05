@@ -89,3 +89,68 @@ textarea.heading:focus {
 .message-success a:hover {
   color: #a4404a;
 }
+
+.poll-answers .add-answer-form {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.poll-answers input {
+  width: 50%;
+  display: inline-block;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #964202;
+  margin-bottom: 1.5rem;
+  margin-right: 5px;
+}
+
+.poll-answers .add-answer-form:last-child input {
+  margin-bottom: 0;
+}
+
+.poll-answers input:focus {
+  border: 2px solid #a8a8a8;
+  outline: none;
+  box-shadow: 0 0 0;
+  color: #964202;
+}
+
+.add-answer {
+  text-align: center;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.2rem;
+}
+
+.add-answer-icon {
+  display: inline-block;
+  margin-right: 0.7rem;
+  cursor: pointer;
+}
+
+.add-answer-text {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.add-answer-text:hover {
+  color: #631000;
+}
+
+.add-answer-form span {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .poll-answers .add-answer-form {
+    width: 100%;
+  }
+
+  .poll-answers input {
+    width: 85%;
+  }
+}

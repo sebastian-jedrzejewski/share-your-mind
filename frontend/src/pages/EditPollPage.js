@@ -3,9 +3,9 @@ import Footer from "../components/Footer/Footer";
 import useFetchUser from "../hooks/useFetchUser";
 import useShowError from "../hooks/useShowError";
 import ErrorModal from "../components/modals/ErrorModal";
-import EditQuestion from "../components/EditQuestion/EditQuestion";
+import EditPoll from "../components/EditPoll/EditPoll";
 
-const EditQuestionPage = () => {
+const EditPollPage = () => {
   const { user, isLoading } = useFetchUser();
 
   useShowError();
@@ -13,11 +13,11 @@ const EditQuestionPage = () => {
   return (
     <>
       <ErrorModal />
-      <Navbar user={user} isLoading={isLoading} activeLink={"questions-link"} />
-      <EditQuestion />
+      <Navbar user={user} isLoading={isLoading} activeLink={"polls-link"} />
+      <EditPoll />
       <Footer />
     </>
   );
 };
 
-export default EditQuestionPage;
+export default EditPollPage;

@@ -10,7 +10,7 @@ from shareyourmind.common.models import (
 class Poll(PublishedContentMixin, ObjectContentTypeMixin):
     OBJECT_CONTENT_TYPE = "poll"
 
-    heading = models.TextField(max_length=400)
+    heading = models.TextField(max_length=200)
 
     likes = None
 
@@ -68,3 +68,41 @@ class PollComment(CommentMixin):
 
     def __str__(self):
         return f"{self.author}: {self.short_body}"
+
+
+class UserVotedPollAnswer(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="voted_answers",
+    )
+    poll_answer = models.ForeignKey(
+        "polls.PollAnswer",
+        on_delete=models.CASCADE,
+        related_name="voted_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "poll_answer"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, poll_answer: {self.poll_answer}"
+
+
+class UserLikedPollComment(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="liked_comments",
+    )
+    poll_comment = models.ForeignKey(
+        "polls.PollComment",
+        on_delete=models.CASCADE,
+        related_name="liked_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "poll_comment"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, poll_comment: {self.poll_comment}"

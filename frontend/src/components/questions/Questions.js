@@ -48,6 +48,12 @@ export const Questions = () => {
         setSearchData={setSearchData}
         searchFormState={searchFormState}
         setSearchFormState={setSearchFormState}
+        contentType={"question"}
+        mostFilters={[
+          { id: "most-answers", name: "Most Answers" },
+          { id: "most-likes", name: "Most Likes" },
+        ]}
+        createButton={{ name: "Ask Question", link: "/ask-question" }}
       />
       <div className="row">
         <div className="col-md-6 offset-md-3">

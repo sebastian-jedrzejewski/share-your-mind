@@ -43,10 +43,6 @@ const EditQuestion = () => {
     });
   }, [question]);
 
-  useEffect(() => {
-    console.log(questionData?.description);
-  }, [questionData?.description]);
-
   if (isLoading) {
     return null;
   }

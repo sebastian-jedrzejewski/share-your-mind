@@ -93,6 +93,7 @@ export const SingleQuestion = () => {
             )}
             <ContentLikes
               contentType={"question"}
+              contentText={"question"}
               initialState={likes}
               contentId={id}
             />
@@ -145,7 +146,12 @@ export const SingleQuestion = () => {
   );
 };
 
-export const ContentLikes = ({ contentType, initialState, contentId }) => {
+export const ContentLikes = ({
+  contentType,
+  contentText,
+  initialState,
+  contentId,
+}) => {
   const [likes, setLikes] = useState(initialState);
   const [isLiked, setIsLiked] = useState(false);
 
@@ -161,7 +167,7 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
             .getElementById(`${contentType}${contentId}`)
             ?.setAttribute(
               "data-tooltip-content",
-              `Click one more time to dislike the ${contentType}`
+              `Click one more time to dislike the ${contentText}`
             );
           setIsLiked(true);
         } else {
@@ -172,13 +178,13 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
             ?.getElementById(`${contentType}${contentId}`)
             .setAttribute(
               "data-tooltip-content",
-              `Like the ${contentType} to make it more popular`
+              `Like the ${contentText} to make it more popular`
             );
           setIsLiked(false);
         }
       });
     }
-  }, [isLiked, contentId, contentType]);
+  }, [isLiked, contentId, contentType, contentText]);
 
   const LikeOrDislike = () => {
     if (isAuthenticated()) {
@@ -212,13 +218,13 @@ export const ContentLikes = ({ contentType, initialState, contentId }) => {
           id={`${contentType}${contentId}`}
           className="question-info like-question"
           data-tooltip-id="like-tooltip"
-          data-tooltip-content={`Like the ${contentType} to make it more popular`}
+          data-tooltip-content={`Like the ${contentText} to make it more popular`}
           onClick={LikeOrDislike}
         >
           <div>
             <img src={like} alt="likes" width="25px" height="21px" />
             <span>
-              {`Like this ${contentType}`} ({likes})
+              {`Like this ${contentText}`} ({likes})
             </span>
             <Tooltip id="like-tooltip" place="bottom" />
           </div>
@@ -322,6 +328,7 @@ export const Answer = ({ user, answer, answerState, setAnswerState }) => {
       )}
       <ContentLikes
         contentType={"answer"}
+        contentText={"answer"}
         initialState={likes}
         contentId={id}
       />
