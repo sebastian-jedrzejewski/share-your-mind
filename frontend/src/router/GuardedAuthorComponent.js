@@ -6,10 +6,12 @@ import useFetchUser from "../hooks/useFetchUser";
 
 const GuardedAuthorComponent = ({ component: Component, contentType }) => {
   const { id } = useParams();
-  const { data, isLoading } = useFetchData(`/api/v1/${contentType}s/${id}/`);
-  const { user } = useFetchUser();
+  const { data, isLoading: isLoading1 } = useFetchData(
+    `/api/v1/${contentType}s/${id}/`
+  );
+  const { user, isLoading: isLoading2 } = useFetchUser();
 
-  if (isLoading) {
+  if (isLoading1 || isLoading2) {
     return null;
   }
 
