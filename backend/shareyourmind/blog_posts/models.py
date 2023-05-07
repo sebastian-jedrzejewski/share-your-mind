@@ -40,3 +40,22 @@ class BlogPostComment(CommentMixin):
 
     def __str__(self):
         return f"{self.author}: {self.short_body}"
+
+
+class UserLikedBlogPostComment(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="liked_blog_post_comments",
+    )
+    blog_post_comment = models.ForeignKey(
+        "blog_posts.BlogPostComment",
+        on_delete=models.CASCADE,
+        related_name="liked_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "blog_post_comment"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, blog_post_comment: {self.blog_post_comment}"
