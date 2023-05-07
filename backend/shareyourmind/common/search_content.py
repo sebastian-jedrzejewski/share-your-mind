@@ -4,6 +4,7 @@ from rest_framework import generics, serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 
+from shareyourmind.blog_posts.models import BlogPost
 from shareyourmind.common.api.serializers import CategorySerializer
 from shareyourmind.common.content_types_constants import OBJECT_CONTENT_TYPES
 from shareyourmind.common.utils import get_category_choices
@@ -49,8 +50,10 @@ class MetadataItemSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
     author = UserSerializer()
-    heading = serializers.CharField()
+    heading = serializers.CharField(required=False)
+    title = serializers.CharField(required=False)
     short_description = serializers.SerializerMethodField(required=False)
+    short_content = serializers.SerializerMethodField(required=False)
     likes = serializers.IntegerField(required=False)
     votes = serializers.IntegerField(required=False)
     number_of_answers = serializers.SerializerMethodField(required=False)
@@ -60,6 +63,10 @@ class MetadataItemSerializer(serializers.Serializer):
     def get_short_description(self, obj):
         if hasattr(obj, "short_description"):
             return obj.short_description
+
+    def get_short_content(self, obj):
+        if hasattr(obj, "short_content"):
+            return obj.short_content
 
     def get_number_of_answers(self, obj):
         if hasattr(obj, "number_of_answers"):
@@ -103,9 +110,12 @@ class SearchAPIView(generics.CreateAPIView):
         order_by_fields = search_data.pop("order_by", [])
 
         use_questions = False
+        use_blog_posts = False
         use_polls = False
         if object_content_type == Question.OBJECT_CONTENT_TYPE:
             use_questions = True
+        elif object_content_type == BlogPost.OBJECT_CONTENT_TYPE:
+            use_blog_posts = True
         elif object_content_type == Poll.OBJECT_CONTENT_TYPE:
             use_polls = True
         else:
@@ -130,6 +140,10 @@ class SearchAPIView(generics.CreateAPIView):
             if use_questions:
                 filter_expression &= Q(heading__icontains=query) | Q(
                     description__icontains=query
+                )
+            elif use_blog_posts:
+                filter_expression &= Q(title__icontains=query) | Q(
+                    content__icontains=query
                 )
             elif use_polls:
                 filter_expression &= Q(heading__icontains=query)
@@ -156,6 +170,12 @@ class SearchAPIView(generics.CreateAPIView):
             if "answers" in order_by_fields or "-answers" in order_by_fields:
                 result = Question.objects.all().annotate(
                     **{order_by_map["answers"]: Count("answers")}
+                )
+        elif use_blog_posts:
+            result = BlogPost.objects.all()
+            if "comments" in order_by_fields or "-comments" in order_by_fields:
+                result = BlogPost.objects.all().annotate(
+                    **{order_by_map["comments"]: Count("comments")}
                 )
         elif use_polls:
             result = Poll.objects.all()
