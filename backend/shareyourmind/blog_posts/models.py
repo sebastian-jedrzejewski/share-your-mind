@@ -3,7 +3,11 @@ from django.db import models
 from django.template.defaultfilters import striptags
 from django.utils.safestring import mark_safe
 
-from shareyourmind.common.models import PublishedContentMixin, ObjectContentTypeMixin, CommentMixin
+from shareyourmind.common.models import (
+    PublishedContentMixin,
+    ObjectContentTypeMixin,
+    CommentMixin,
+)
 
 
 class BlogPost(PublishedContentMixin, ObjectContentTypeMixin):
@@ -20,6 +24,10 @@ class BlogPost(PublishedContentMixin, ObjectContentTypeMixin):
         if len(self.content.__str__()) > 100:
             return striptags(mark_safe(self.content[:100] + "..."))
         return striptags(mark_safe(self.content))
+
+    @property
+    def number_of_comments(self):
+        return self.comments.count()
 
     def __str__(self):
         return f"{self.author}: {self.title}"

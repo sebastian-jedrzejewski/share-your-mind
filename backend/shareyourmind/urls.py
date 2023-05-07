@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from shareyourmind.blog_posts.api.views import BlogPostViewSet, BlogPostCommentViewSet
 from shareyourmind.common.api.views import CategoryView
 from shareyourmind.common.search_content import SearchAPIView
 from shareyourmind.polls.api.views import (
@@ -26,6 +27,10 @@ api_router.register("answers", AnswerViewSet, basename="answer")
 api_router.register("polls", PollViewSet, basename="poll")
 api_router.register("poll_answers", PollAnswerViewSet, basename="poll_answer")
 api_router.register("poll_comments", PollCommentViewSet, basename="poll_comment")
+api_router.register("blog_posts", BlogPostViewSet, basename="blog_post")
+api_router.register(
+    "blog_post_comments", BlogPostCommentViewSet, basename="blog_post_comment"
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
