@@ -90,7 +90,11 @@ class BlogPostDetailSerializer(BlogPostListSerializer):
     comments = BlogPostCommentDetailSerializer(many=True)
 
     class Meta(BlogPostListSerializer.Meta):
-        fields = BlogPostListSerializer.Meta.fields + ["updated_at", "comments"]
+        fields = BlogPostListSerializer.Meta.fields + [
+            "content",
+            "updated_at",
+            "comments",
+        ]
 
 
 class BlogPostCreateSerializer(serializers.ModelSerializer):

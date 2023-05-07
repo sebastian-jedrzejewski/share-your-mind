@@ -16,7 +16,7 @@ from shareyourmind.blog_posts.models import BlogPost, BlogPostComment
 
 class BlogPostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsBlogPostAuthor]
-    serializer_class = [BlogPostDetailSerializer]
+    serializer_class = BlogPostDetailSerializer
     parser_classes = [MultiPartParser, FormParser]
     queryset = BlogPost.objects.all()
 
@@ -35,7 +35,7 @@ class BlogPostViewSet(viewsets.ModelViewSet):
 
 class BlogPostCommentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsBlogPostCommentAuthor]
-    serializer_class = [BlogPostCommentDetailSerializer]
+    serializer_class = BlogPostCommentDetailSerializer
     queryset = BlogPostComment.objects.all()
 
     def get_permissions(self):
