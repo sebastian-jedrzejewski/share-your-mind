@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "shareyourmind.common.apps.CommonConfig",
     "shareyourmind.questions.apps.QuestionsConfig",
     "shareyourmind.polls.apps.PollsConfig",
+    "shareyourmind.blog_posts.apps.BlogPostsConfig",
 ]
 
 MIDDLEWARE = [
@@ -135,6 +136,9 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "static/"
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "mediafiles")
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
