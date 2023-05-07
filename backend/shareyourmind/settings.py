@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "shareyourmind.common.apps.CommonConfig",
     "shareyourmind.questions.apps.QuestionsConfig",
     "shareyourmind.polls.apps.PollsConfig",
+    "shareyourmind.blog_posts.apps.BlogPostsConfig",
 ]
 
 MIDDLEWARE = [
