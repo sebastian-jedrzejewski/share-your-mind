@@ -44,10 +44,10 @@ export const SingleBlogPost = () => {
     comments,
   } = blogPost;
 
-  //   const deletePoll = (id) => {
-  //     apiCall.delete(`/api/v1/polls/${id}/`);
-  //     window.location.href = "/polls";
-  //   };
+  const deleteBlogPost = (id) => {
+    apiCall.delete(`/api/v1/blog_posts/${id}/`);
+    window.location.href = "/blog-posts";
+  };
 
   return (
     <div className="container main-content">
@@ -104,6 +104,14 @@ export const SingleBlogPost = () => {
               initialState={likes}
               contentId={id}
             />
+
+            {user?.username === author?.username && (
+              <EditDelete
+                deleteModalId={"blog-post-delete-modal"}
+                deleteAction={deleteBlogPost}
+                contentId={id}
+              />
+            )}
           </div>
 
           <p className="answer-note">
@@ -134,11 +142,11 @@ export const SingleBlogPost = () => {
             </div>
           )}
 
-          {/* <CommentField
-            pollId={id}
+          <CommentField
+            blogPostId={id}
             commentState={commentState}
             setCommentState={setCommentState}
-          /> */}
+          />
         </div>
       </div>
     </div>
@@ -153,23 +161,23 @@ export const EditDelete = ({
   setCommentState,
 }) => {
   const { data } = useFetchData(
-    deleteModalId.startsWith("poll")
-      ? `/api/v1/polls/${contentId}`
-      : `/api/v1/poll_comments/${contentId}`
+    deleteModalId.startsWith("blog-post")
+      ? `/api/v1/blog_posts/${contentId}`
+      : `/api/v1/blog_post_comments/${contentId}`
   );
 
   const goToEditPage = () => {
-    window.location.href = `/edit-poll/${contentId}`;
+    window.location.href = `/edit-blog-post/${contentId}`;
   };
 
   const scrollToEditComment = () => {
-    const yourPollComment = document.getElementById("your-poll-comment");
-    if (yourPollComment) {
-      yourPollComment.scrollIntoView({ behavior: "smooth" });
+    const yourPostComment = document.getElementById("your-post-comment");
+    if (yourPostComment) {
+      yourPostComment.scrollIntoView({ behavior: "smooth" });
     }
-    const commentToPoll = document.getElementById("comment-to-poll");
-    if (commentToPoll) {
-      commentToPoll.innerHTML = "Save changes";
+    const commentToPost = document.getElementById("comment-to-post");
+    if (commentToPost) {
+      commentToPost.innerHTML = "Save changes";
     }
     const cancelEditing = document.getElementById("cancel-editing");
     if (cancelEditing) {
@@ -184,10 +192,12 @@ export const EditDelete = ({
   };
 
   return (
-    <div className="poll-edit-delete">
+    <div className="post-edit-delete" style={{ marginTop: "1rem" }}>
       <button
         onClick={
-          deleteModalId.startsWith("poll") ? goToEditPage : scrollToEditComment
+          deleteModalId.startsWith("blog-post")
+            ? goToEditPage
+            : scrollToEditComment
         }
         className="btn btn-primary"
         style={{ marginRight: "20px", fontSize: "1.2rem" }}
@@ -252,13 +262,13 @@ export const Comment = ({ user, comment, commentState, setCommentState }) => {
   );
 };
 
-export const CommentField = ({ pollId, commentState, setCommentState }) => {
+export const CommentField = ({ blogPostId, commentState, setCommentState }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ body: "" });
 
   useEffect(() => {
     if (commentState?.isCommentModified === false) {
-      document.getElementById("comment-to-poll").innerHTML = "Comment";
+      document.getElementById("comment-to-post").innerHTML = "Comment";
     }
   }, [commentState?.isCommentModified]);
 
@@ -267,8 +277,8 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
     if (isAuthenticated()) {
       if (!commentState?.isCommentModified) {
         apiCall
-          .post("/api/v1/poll_comments/", {
-            poll_id: pollId,
+          .post("/api/v1/blog_post_comments/", {
+            blog_post_id: blogPostId,
             body: commentState?.commentContent,
           })
           .then(() => {
@@ -290,7 +300,7 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
           });
       } else {
         apiCall
-          .patch(`/api/v1/poll_comments/${commentState?.commentId}/`, {
+          .patch(`/api/v1/blog_post_comments/${commentState?.commentId}/`, {
             body: commentState?.commentContent,
           })
           .then(() => {
@@ -333,7 +343,7 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <p className="answer-note" id="your-poll-comment">
+        <p className="answer-note" id="your-post-comment">
           Your Comment
         </p>
         {commentState?.initialCommentContent === "" ? (
@@ -356,7 +366,7 @@ export const CommentField = ({ pollId, commentState, setCommentState }) => {
             fontSize: "1.4rem",
           }}
           type="submit"
-          id="comment-to-poll"
+          id="comment-to-post"
         >
           Comment
         </button>
