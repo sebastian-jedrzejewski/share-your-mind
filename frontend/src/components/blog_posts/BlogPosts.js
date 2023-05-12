@@ -105,7 +105,7 @@ export const BlogPost = ({ blogPost }) => {
             style={{ marginRight: "5px" }}
           /> */}
           {author?.username}{" "}
-          <span className="date"> {getDateString(created_at)}</span>
+          <span className="date">posted {getDateString(created_at)}</span>
         </div>
         <div className="col-md-6 categories">
           <span
