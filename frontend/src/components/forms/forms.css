@@ -145,6 +145,22 @@ textarea.heading:focus {
   cursor: pointer;
 }
 
+.default-form input {
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #964202;
+  margin-bottom: 1.5rem;
+  margin-right: 5px;
+}
+
+.default-form input:focus {
+  border: 2px solid #a8a8a8;
+  outline: none;
+  box-shadow: 0 0 0;
+  color: #964202;
+}
+
 @media (max-width: 768px) {
   .poll-answers .add-answer-form {
     width: 100%;

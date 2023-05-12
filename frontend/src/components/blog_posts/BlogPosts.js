@@ -37,10 +37,6 @@ export const BlogPosts = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   if (isLoading) {
     return null;
   }

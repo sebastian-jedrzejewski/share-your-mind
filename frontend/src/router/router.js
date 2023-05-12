@@ -12,6 +12,7 @@ import { PollsPage, SinglePollPage } from "../pages/PollsPage";
 import CreatePollPage from "../pages/CreatePollPage";
 import EditPollPage from "../pages/EditPollPage";
 import { BlogPostsPage, SingleBlogPostPage } from "../pages/BlogPostsPage";
+import CreateBlogPostPage from "../pages/CreateBlogPostPage";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
   {
     path: "/blog-posts/:id",
     element: <GuardedComponent component={SingleBlogPostPage} />,
+  },
+  {
+    path: "/create-blog-post",
+    element: <GuardedComponent component={CreateBlogPostPage} />,
   },
 ]);
 
