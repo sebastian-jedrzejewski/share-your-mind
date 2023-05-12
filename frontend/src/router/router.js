@@ -11,6 +11,7 @@ import GuardedAuthorComponent from "./GuardedAuthorComponent";
 import { PollsPage, SinglePollPage } from "../pages/PollsPage";
 import CreatePollPage from "../pages/CreatePollPage";
 import EditPollPage from "../pages/EditPollPage";
+import { BlogPostsPage } from "../pages/BlogPostsPage";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
     element: (
       <GuardedAuthorComponent component={EditPollPage} contentType="poll" />
     ),
+  },
+  {
+    path: "/blog-posts",
+    element: <GuardedComponent component={BlogPostsPage} />,
   },
 ]);
 

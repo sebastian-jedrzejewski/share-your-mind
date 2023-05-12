@@ -13,7 +13,7 @@ from shareyourmind.common.models import (
 class BlogPost(PublishedContentMixin, ObjectContentTypeMixin):
     OBJECT_CONTENT_TYPE = "blog_post"
 
-    image = models.ImageField(upload_to="images")
+    image = models.ImageField(upload_to="images", null=True, blank=True)
     title = models.TextField(max_length=120)
     content = RichTextField()
 
@@ -21,13 +21,17 @@ class BlogPost(PublishedContentMixin, ObjectContentTypeMixin):
 
     @property
     def short_content(self):
-        if len(self.content.__str__()) > 100:
-            return striptags(mark_safe(self.content[:100] + "..."))
+        if len(self.content.__str__()) > 150:
+            return striptags(mark_safe(self.content[:150] + "..."))
         return striptags(mark_safe(self.content))
 
     @property
     def number_of_comments(self):
         return self.comments.count()
+
+    @property
+    def image_url(self):
+        return self.image.url
 
     def __str__(self):
         return f"{self.author}: {self.title}"
