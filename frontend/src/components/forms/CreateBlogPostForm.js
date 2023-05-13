@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import apiCall from "../../api/axios";
