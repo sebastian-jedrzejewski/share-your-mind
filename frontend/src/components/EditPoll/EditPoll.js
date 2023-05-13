@@ -227,7 +227,9 @@ const EditPoll = () => {
             )}
 
             <label className="form-title">
-              <p>Categories:</p>
+              <p>
+                <strong>Categories:</strong>
+              </p>
             </label>
             <MultiSelect
               selectedCategories={pollData?.categories}
@@ -259,7 +261,7 @@ const EditPoll = () => {
                       data-tooltip-id="my-tooltip"
                       data-tooltip-content="Cannot delete already created answer"
                     >
-                      <img src={deleteBtn} width="30" height="30" />
+                      <img src={deleteBtn} alt="" width="30" height="30" />
                     </span>
                     <Tooltip id="my-tooltip" place="right" />
                   </div>
@@ -275,7 +277,7 @@ const EditPoll = () => {
                 }}
               >
                 <span>
-                  <img src={plus} width="25" height="25" />
+                  <img src={plus} alt="" width="25" height="25" />
                 </span>
               </div>
               <div

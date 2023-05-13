@@ -135,7 +135,9 @@ const EditQuestion = () => {
             )}
 
             <label className="form-title">
-              <p>Categories:</p>
+              <p>
+                <strong>Categories:</strong>
+              </p>
             </label>
             <MultiSelect
               selectedCategories={questionData?.categories}

@@ -13,7 +13,7 @@ from shareyourmind.common.models import (
 class BlogPost(PublishedContentMixin, ObjectContentTypeMixin):
     OBJECT_CONTENT_TYPE = "blog_post"
 
-    image = models.ImageField(upload_to="images")
+    image = models.ImageField(upload_to="images", null=True, blank=True)
     title = models.TextField(max_length=120)
     content = RichTextField()
 
@@ -21,13 +21,17 @@ class BlogPost(PublishedContentMixin, ObjectContentTypeMixin):
 
     @property
     def short_content(self):
-        if len(self.content.__str__()) > 100:
-            return striptags(mark_safe(self.content[:100] + "..."))
+        if len(self.content.__str__()) > 150:
+            return striptags(mark_safe(self.content[:150] + "..."))
         return striptags(mark_safe(self.content))
 
     @property
     def number_of_comments(self):
         return self.comments.count()
+
+    @property
+    def image_url(self):
+        return self.image.url
 
     def __str__(self):
         return f"{self.author}: {self.title}"
@@ -40,6 +44,25 @@ class BlogPostComment(CommentMixin):
 
     def __str__(self):
         return f"{self.author}: {self.short_body}"
+
+
+class UserLikedBlogPost(models.Model):
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="liked_blog_posts",
+    )
+    blog_post = models.ForeignKey(
+        "blog_posts.BlogPost",
+        on_delete=models.CASCADE,
+        related_name="liked_by_users",
+    )
+
+    class Meta:
+        unique_together = [["user", "blog_post"]]
+
+    def __str__(self):
+        return f"ID: {self.id}, user: {self.user}, blog_post: {self.blog_post}"
 
 
 class UserLikedBlogPostComment(models.Model):

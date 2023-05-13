@@ -79,7 +79,7 @@ const Navbar = ({ user, isLoading, activeLink }) => {
                 className={`nav-link ${
                   activeLink === "blogs-link" ? "active" : ""
                 }`}
-                href="/"
+                href="/blog-posts"
               >
                 Blog posts
               </a>

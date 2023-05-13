@@ -50,6 +50,7 @@ class MetadataItemSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
     author = UserSerializer()
+    image_url = serializers.SerializerMethodField(required=False)
     heading = serializers.CharField(required=False)
     title = serializers.CharField(required=False)
     short_description = serializers.SerializerMethodField(required=False)
@@ -59,6 +60,11 @@ class MetadataItemSerializer(serializers.Serializer):
     number_of_answers = serializers.SerializerMethodField(required=False)
     number_of_comments = serializers.SerializerMethodField(required=False)
     categories = CategorySerializer(many=True)
+
+    def get_image_url(self, obj):
+        if getattr(obj, "image", None):
+            image_url = obj.image_url
+            return self.context["request"].build_absolute_uri(image_url)
 
     def get_short_description(self, obj):
         if hasattr(obj, "short_description"):
@@ -98,7 +104,11 @@ class SearchAPIView(generics.CreateAPIView):
         result_qs = self.get_result_queryset(search_data, self.order_by_map)
         paginated_result_qs = self.paginate_queryset(result_qs)
 
-        result_data = self.item_serializer(instance=paginated_result_qs, many=True).data
+        result_data = self.item_serializer(
+            instance=paginated_result_qs,
+            many=True,
+            context=self.get_serializer_context(),
+        ).data
         return self.get_paginated_response(data=result_data)
 
     def get_result_queryset(self, search_data, order_by_map):

@@ -24,7 +24,7 @@ const questionsSection = {
 
 const blogsSection = {
   title: "Blog Posts",
-  link: "/blog_posts",
+  link: "/blog-posts",
   images: [post, learn, note],
   headings: [
     "Find an interesting Post",

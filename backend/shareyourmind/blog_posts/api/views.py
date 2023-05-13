@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from permissions import IsBlogPostAuthor, IsBlogPostCommentAuthor
 from shareyourmind.blog_posts.api.serializers import (
@@ -17,6 +18,7 @@ from shareyourmind.blog_posts.models import (
     BlogPost,
     BlogPostComment,
     UserLikedBlogPostComment,
+    UserLikedBlogPost,
 )
 
 
@@ -37,6 +39,44 @@ class BlogPostViewSet(viewsets.ModelViewSet):
         elif self.action in ["partial_update", "update", "create"]:
             return BlogPostCreateSerializer
         return super().get_serializer_class()
+
+    @action(methods=["POST"], detail=True)
+    def like(self, request, *args, **kwargs):
+        blog_post = self.get_object()
+        user = request.user
+        liked_blog_post = UserLikedBlogPost.objects.filter(
+            user=user, blog_post=blog_post
+        ).first()
+        if liked_blog_post is not None:
+            return Response(
+                data={"Error": "Cannot like the blog post second time!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        UserLikedBlogPost.objects.create(user=user, blog_post=blog_post)
+        blog_post.likes = blog_post.likes + 1
+        blog_post.save(update_fields=["likes"])
+        data = self.get_serializer_class()(instance=blog_post).data
+        return Response(data=data, status=status.HTTP_200_OK)
+
+    @action(methods=["POST"], detail=True)
+    def dislike(self, request, *args, **kwargs):
+        blog_post = self.get_object()
+        user = request.user
+        liked_blog_post = UserLikedBlogPost.objects.filter(
+            user=user, blog_post=blog_post
+        ).first()
+        if liked_blog_post is None:
+            return Response(
+                data={"Error": "Cannot dislike the blog post that has not been liked!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        liked_blog_post.delete()
+        blog_post.likes = blog_post.likes - 1
+        blog_post.save(update_fields=["likes"])
+        data = self.get_serializer_class()(instance=blog_post).data
+        return Response(data=data, status=status.HTTP_200_OK)
 
 
 class BlogPostCommentViewSet(viewsets.ModelViewSet):
@@ -97,3 +137,33 @@ class BlogPostCommentViewSet(viewsets.ModelViewSet):
         blog_post_comment.save(update_fields=["likes"])
         data = self.get_serializer_class()(instance=blog_post_comment).data
         return Response(data=data, status=status.HTTP_200_OK)
+
+
+class UserLikedBlogPostAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        liked_blog_posts = UserLikedBlogPost.objects.filter(user=user)
+        liked_blog_posts_ids = list(
+            liked_blog_posts.values_list("blog_post_id", flat=True)
+        )
+        return Response(
+            data={"liked_blog_posts_ids": liked_blog_posts_ids},
+            status=status.HTTP_200_OK,
+        )
+
+
+class UserLikedBlogPostCommentAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        liked_blog_posts_comments = UserLikedBlogPostComment.objects.filter(user=user)
+        liked_blog_posts_comments_ids = list(
+            liked_blog_posts_comments.values_list("blog_post_comment_id", flat=True)
+        )
+        return Response(
+            data={"liked_blog_post_comments_ids": liked_blog_posts_comments_ids},
+            status=status.HTTP_200_OK,
+        )
