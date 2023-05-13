@@ -59,7 +59,6 @@ const EditBlogPost = () => {
   };
 
   const handleChange = (e) => {
-    console.log("HERE");
     const name = e.target.name;
     const value = e.target.value;
     setBlogPostData({ ...blogPostData, [name]: value });
