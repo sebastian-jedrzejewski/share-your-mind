@@ -56,6 +56,10 @@ textarea.heading:focus {
   margin-bottom: 1.5rem;
 }
 
+/* .rdw-link-decorator-icon {
+  display: none;
+} */
+
 .editor-class {
   background-color: #f8ead8;
   padding: 5px 20px;
