@@ -19,6 +19,11 @@ class AnswerListSerializer(serializers.ModelSerializer):
 class AnswerDetailSerializer(serializers.ModelSerializer):
     body = serializers.SerializerMethodField()
     author = UserSerializer()
+    nested_answers = serializers.SerializerMethodField()
+
+    def get_nested_answers(self, obj):
+        serializer = AnswerDetailSerializer(obj.nested_answers, many=True)
+        return serializer.data
 
     class Meta:
         model = Answer
@@ -29,7 +34,10 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
             "likes",
             "author",
             "body",
+            "parent_answer_id",
+            "nested_answers",
         )
+        depth = 1
 
     def get_body(self, obj):
         return mark_safe(obj.body)
@@ -43,6 +51,13 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
         allow_empty=False,
         allow_null=False,
     )
+    answer_id = serializers.PrimaryKeyRelatedField(
+        queryset=Answer.objects.all(),
+        source="parent_answer",
+        allow_empty=False,
+        allow_null=False,
+        required=False,
+    )
 
     class Meta:
         model = Answer
@@ -52,6 +67,7 @@ class AnswerCreateSerializer(serializers.ModelSerializer):
             "body",
             "likes",
             "question_id",
+            "answer_id",
         )
 
     def validate_body(self, body):

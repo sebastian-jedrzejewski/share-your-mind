@@ -39,6 +39,13 @@ class Answer(PublishedContentMixin):
     question = models.ForeignKey(
         "questions.Question", on_delete=models.CASCADE, related_name="answers"
     )
+    parent_answer = models.ForeignKey(
+        "questions.Answer",
+        on_delete=models.CASCADE,
+        related_name="nested_answers",
+        blank=True,
+        null=True,
+    )
 
     @property
     def short_body(self):
