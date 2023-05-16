@@ -409,7 +409,7 @@ export const Answer = ({
       {nested_answers?.length > 0 && (
         <div className="drop-answers" {...getToggleProps()}>
           <span style={{ marginRight: "5px" }}>
-            <img width="30" src={isExpanded ? up : down} />
+            <img width="30" src={isExpanded ? up : down} alt="up/down" />
           </span>
           {`${nested_answers?.length} answer` +
             (nested_answers?.length > 1 ? "s" : "")}
@@ -444,8 +444,7 @@ export const Answer = ({
 };
 
 export const NestedAnswer = ({ user, answer, answerState, setAnswerState }) => {
-  const { id, created_at, updated_at, likes, author, body, parent_answer_id } =
-    answer;
+  const { id, created_at, updated_at, likes, author, body } = answer;
 
   const deleteAnswer = (id) => {
     apiCall

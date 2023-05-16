@@ -4,7 +4,6 @@ import { useState } from "react";
 import axios from "axios";
 import { performAuthentication } from "../../auth/auth";
 import { useStyles } from "./useStyles";
-import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [user, setUser] = useState({ email: "", password: "" });
