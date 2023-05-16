@@ -208,7 +208,12 @@ const CreatePollForm = () => {
                     onChange={handlePollAnswerChange}
                   />
                   <span onClick={deleteAnswerForm}>
-                    <img src={deleteBtn} width="30" height="30" />
+                    <img
+                      src={deleteBtn}
+                      width="30"
+                      height="30"
+                      alt="delete-button"
+                    />
                   </span>
                 </div>
                 <div className="add-answer-form" id="poll-answer2">
@@ -220,7 +225,12 @@ const CreatePollForm = () => {
                     onChange={handlePollAnswerChange}
                   />
                   <span onClick={deleteAnswerForm}>
-                    <img src={deleteBtn} width="30" height="30" />
+                    <img
+                      src={deleteBtn}
+                      width="30"
+                      height="30"
+                      alt="delete-button"
+                    />
                   </span>
                 </div>
               </div>
@@ -232,7 +242,7 @@ const CreatePollForm = () => {
                   }}
                 >
                   <span>
-                    <img src={plus} width="25" height="25" />
+                    <img src={plus} width="25" height="25" alt="plus" />
                   </span>
                 </div>
                 <div

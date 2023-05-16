@@ -24,6 +24,11 @@ class BlogPostCommentListSerializer(serializers.ModelSerializer):
 class BlogPostCommentDetailSerializer(serializers.ModelSerializer):
     body = serializers.SerializerMethodField()
     author = UserSerializer()
+    nested_comments = serializers.SerializerMethodField()
+
+    def get_nested_comments(self, obj):
+        serializer = BlogPostCommentDetailSerializer(obj.nested_comments, many=True)
+        return serializer.data
 
     class Meta:
         model = BlogPostComment
@@ -35,6 +40,8 @@ class BlogPostCommentDetailSerializer(serializers.ModelSerializer):
             "author",
             "body",
             "blog_post_id",
+            "parent_comment_id",
+            "nested_comments",
         ]
 
     def get_body(self, obj):
@@ -49,6 +56,13 @@ class BlogPostCommentCreateSerializer(serializers.ModelSerializer):
         allow_empty=False,
         allow_null=False,
     )
+    blog_post_comment_id = serializers.PrimaryKeyRelatedField(
+        queryset=BlogPostComment.objects.all(),
+        source="parent_comment",
+        allow_empty=False,
+        allow_null=False,
+        required=False,
+    )
 
     class Meta:
         model = BlogPostComment
@@ -58,6 +72,7 @@ class BlogPostCommentCreateSerializer(serializers.ModelSerializer):
             "body",
             "likes",
             "blog_post_id",
+            "blog_post_comment_id",
         )
 
     def validate_body(self, body):

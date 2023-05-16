@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import like from "../../assets/like.png";
 import noImage from "../../assets/no-image.png";
 import comment from "../../assets/comment.png";

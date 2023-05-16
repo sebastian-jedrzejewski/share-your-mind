@@ -7,6 +7,8 @@ import {
 import useFetchData from "../../hooks/useFetchData";
 import "./questions.css";
 import like from "../../assets/like.png";
+import up from "../../assets/up.png";
+import down from "../../assets/down.png";
 import { useEffect, useState } from "react";
 import RichTextField, {
   RichTextFieldWithContent,
@@ -18,6 +20,7 @@ import LoginModal, { showLoginModal } from "../modals/LoginModal";
 import { Tooltip } from "react-tooltip";
 import useFetchUser from "../../hooks/useFetchUser";
 import DeleteModal, { showDeleteModal } from "../modals/DeleteModal";
+import { useCollapse } from "react-collapsed";
 
 export const SingleQuestion = () => {
   const { id } = useParams();
@@ -120,15 +123,17 @@ export const SingleQuestion = () => {
                       key={answer.id}
                       user={user}
                       answer={answer}
+                      questionId={id}
                       answerState={answerState}
                       setAnswerState={setAnswerState}
                     />
-                    {index !== answers?.length - 1 && (
-                      <>
-                        <br></br>
-                        <hr></hr>
-                      </>
-                    )}
+                    {index !== answers?.length - 1 &&
+                      answer?.parent_answer_id === null && (
+                        <>
+                          <br></br>
+                          <hr></hr>
+                        </>
+                      )}
                   </>
                 );
               })}
@@ -299,7 +304,146 @@ export const EditDelete = ({
   );
 };
 
-export const Answer = ({ user, answer, answerState, setAnswerState }) => {
+export const Answer = ({
+  user,
+  answer,
+  questionId,
+  answerState,
+  setAnswerState,
+}) => {
+  const {
+    id,
+    created_at,
+    updated_at,
+    likes,
+    author,
+    body,
+    parent_answer_id,
+    nested_answers,
+  } = answer;
+  const [showAnswerField, setShowAnswerField] = useState(false);
+  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
+
+  const deleteAnswer = (id) => {
+    apiCall
+      .delete(`/api/v1/answers/${id}`)
+      .then(() => document.location.reload());
+  };
+
+  if (parent_answer_id) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className="row">
+        <div className="col-md-9 author">
+          {author?.username}{" "}
+          <span className="date">answered {getDateString(created_at)}</span>
+          {getDateString(created_at) !== getDateString(updated_at) && (
+            <span className="date">, modified {getDateString(updated_at)}</span>
+          )}
+        </div>
+        <div className="col-md-3 ref-answer">
+          <span
+            id={`answer-to-answer${id}`}
+            style={{ cursor: "pointer" }}
+            data-tooltip-id="answer-tooltip"
+            data-tooltip-content="Answer to this answer"
+          >
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={(e) => {
+                setShowAnswerField(!showAnswerField);
+                if (showAnswerField) {
+                  e.target.innerHTML = "Answer";
+                  document
+                    .getElementById(`answer-to-answer${id}`)
+                    .setAttribute(
+                      "data-tooltip-content",
+                      "Answer to this answer"
+                    );
+                } else {
+                  e.target.innerHTML = "Cancel";
+                  document
+                    .getElementById(`answer-to-answer${id}`)
+                    .setAttribute("data-tooltip-content", "Cancel answering");
+                }
+              }}
+            >
+              Answer
+            </button>
+          </span>
+          <Tooltip id="answer-tooltip" place="bottom" />
+        </div>
+      </div>
+      {body && (
+        <div
+          className="question-description answer-body"
+          style={{ fontSize: "Large", border: "none", marginTop: "1.5rem" }}
+          dangerouslySetInnerHTML={{ __html: body }}
+        />
+      )}
+      <ContentLikes
+        contentType={"answer"}
+        contentText={"answer"}
+        initialState={likes}
+        contentId={id}
+      />
+
+      {user?.username === author?.username && (
+        <EditDelete
+          deleteModalId={"answer-delete-modal"}
+          deleteAction={deleteAnswer}
+          contentId={id}
+          answerState={answerState}
+          setAnswerState={setAnswerState}
+        />
+      )}
+
+      {showAnswerField && (
+        <NestedAnswerField questionId={questionId} answerId={id} />
+      )}
+
+      {nested_answers?.length > 0 && (
+        <div className="drop-answers" {...getToggleProps()}>
+          <span style={{ marginRight: "5px" }}>
+            <img width="30" src={isExpanded ? up : down} alt="up/down" />
+          </span>
+          {`${nested_answers?.length} answer` +
+            (nested_answers?.length > 1 ? "s" : "")}
+        </div>
+      )}
+
+      {nested_answers?.length > 0 && (
+        <div className="welcome-container question-box" {...getCollapseProps()}>
+          {nested_answers.map((answer, index) => {
+            return (
+              <>
+                <NestedAnswer
+                  key={answer.id}
+                  user={user}
+                  answer={answer}
+                  answerState={answerState}
+                  setAnswerState={setAnswerState}
+                />
+                {index !== nested_answers?.length - 1 && (
+                  <>
+                    <br></br>
+                    <hr></hr>
+                  </>
+                )}
+              </>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+};
+
+export const NestedAnswer = ({ user, answer, answerState, setAnswerState }) => {
   const { id, created_at, updated_at, likes, author, body } = answer;
 
   const deleteAnswer = (id) => {
@@ -346,7 +490,12 @@ export const Answer = ({ user, answer, answerState, setAnswerState }) => {
   );
 };
 
-export const AnswerField = ({ questionId, answerState, setAnswerState }) => {
+export const AnswerField = ({
+  questionId,
+  isNested = false,
+  answerState,
+  setAnswerState,
+}) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState({ body: "" });
 
@@ -380,7 +529,6 @@ export const AnswerField = ({ questionId, answerState, setAnswerState }) => {
           })
           .catch((error) => {
             setErrorMessage({ ...error.response.data });
-            console.log(error.response.data);
           });
       } else {
         apiCall
@@ -402,7 +550,6 @@ export const AnswerField = ({ questionId, answerState, setAnswerState }) => {
           })
           .catch((error) => {
             setErrorMessage({ ...error.response.data });
-            console.log(error.response.data);
           });
       }
       document.getElementById("cancel-editing").style.display = "none";
@@ -465,6 +612,92 @@ export const AnswerField = ({ questionId, answerState, setAnswerState }) => {
           }}
           type="button"
           id="cancel-editing"
+          onClick={cancelEditing}
+        >
+          Cancel
+        </button>
+        {isSuccess && (
+          <p
+            className="message-success mt-3"
+            style={{ textAlign: "center", color: "#964202" }}
+          >
+            Your answer has been saved successfully. To see it, reload the page.
+          </p>
+        )}
+      </form>
+    </>
+  );
+};
+
+export const NestedAnswerField = ({ questionId, answerId }) => {
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({ body: "" });
+  const [answerContent, setAnswerContent] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    apiCall
+      .post("/api/v1/answers/", {
+        question_id: questionId,
+        answer_id: answerId,
+        body: answerContent,
+      })
+      .then(() => {
+        setIsSuccess(true);
+        setTimeout(() => {
+          setIsSuccess(false);
+        }, 3000);
+        setAnswerContent("");
+        setErrorMessage({ body: "" });
+      })
+      .catch((error) => {
+        setErrorMessage({ ...error.response.data });
+      });
+  };
+
+  const cancelEditing = (e) => {
+    setAnswerContent("");
+    e.target.style.display = "none";
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <p
+          className="answer-note nested-answer"
+          id={`your-answer-to${answerId}`}
+          style={{ marginTop: "1rem" }}
+        >
+          Your Answer
+        </p>
+        <RichTextField
+          descriptionContent={""}
+          setDescriptionContent={setAnswerContent}
+        />
+        {errorMessage?.body && <ErrorMessage message={errorMessage.body} />}
+        <button
+          className="btn btn-default link-button"
+          style={{
+            marginTop: "0",
+            padding: "10px 30px",
+            fontSize: "1.4rem",
+          }}
+          type="submit"
+          id={`answer-to-answer${answerId}`}
+        >
+          Answer
+        </button>
+        <button
+          className="btn btn-default link-button"
+          style={{
+            marginTop: "0",
+            marginLeft: "10px",
+            padding: "10px 30px",
+            fontSize: "1.4rem",
+            display: "none",
+          }}
+          type="button"
+          id={`cancel-editing-to-answer${answerId}`}
           onClick={cancelEditing}
         >
           Cancel

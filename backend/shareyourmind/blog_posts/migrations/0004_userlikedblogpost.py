@@ -6,22 +6,43 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('blog_posts', '0003_alter_blogpost_image'),
+        ("blog_posts", "0003_alter_blogpost_image"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserLikedBlogPost',
+            name="UserLikedBlogPost",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('blog_post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='liked_by_users', to='blog_posts.blogpost')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='liked_blog_posts', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "blog_post",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="liked_by_users",
+                        to="blog_posts.blogpost",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="liked_blog_posts",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'blog_post')},
+                "unique_together": {("user", "blog_post")},
             },
         ),
     ]

@@ -65,6 +65,13 @@ class PollComment(CommentMixin):
     poll = models.ForeignKey(
         "polls.Poll", on_delete=models.CASCADE, related_name="comments"
     )
+    parent_comment = models.ForeignKey(
+        "polls.PollComment",
+        on_delete=models.CASCADE,
+        related_name="nested_comments",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.author}: {self.short_body}"

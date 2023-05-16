@@ -172,12 +172,24 @@
   z-index: 0;
 }
 
+.ref-answer {
+  text-align: right;
+}
+
+.drop-answers {
+  color: #964202;
+  display: inline-block;
+  font-size: 1.3rem;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
   .author {
     text-align: center;
   }
 
-  .categories {
+  .categories,
+  .ref-answer {
     text-align: center;
     padding-top: 0.9rem;
   }

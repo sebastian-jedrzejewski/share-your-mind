@@ -4,8 +4,12 @@ from django.conf import settings
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from shareyourmind.blog_posts.api.views import BlogPostViewSet, BlogPostCommentViewSet, UserLikedBlogPostAPIView, \
-    UserLikedBlogPostCommentAPIView
+from shareyourmind.blog_posts.api.views import (
+    BlogPostViewSet,
+    BlogPostCommentViewSet,
+    UserLikedBlogPostAPIView,
+    UserLikedBlogPostCommentAPIView,
+)
 from shareyourmind.common.api.views import CategoryView
 from shareyourmind.common.search_content import SearchAPIView
 from shareyourmind.polls.api.views import (

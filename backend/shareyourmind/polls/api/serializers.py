@@ -24,6 +24,11 @@ class PollCommentListSerializer(serializers.ModelSerializer):
 class PollCommentDetailSerializer(serializers.ModelSerializer):
     body = serializers.SerializerMethodField()
     author = UserSerializer()
+    nested_comments = serializers.SerializerMethodField()
+
+    def get_nested_comments(self, obj):
+        serializer = PollCommentDetailSerializer(obj.nested_comments, many=True)
+        return serializer.data
 
     class Meta:
         model = PollComment
@@ -35,6 +40,8 @@ class PollCommentDetailSerializer(serializers.ModelSerializer):
             "author",
             "body",
             "poll_id",
+            "parent_comment_id",
+            "nested_comments",
         ]
 
     def get_body(self, obj):
@@ -49,6 +56,13 @@ class PollCommentCreateSerializer(serializers.ModelSerializer):
         allow_empty=False,
         allow_null=False,
     )
+    poll_comment_id = serializers.PrimaryKeyRelatedField(
+        queryset=PollComment.objects.all(),
+        source="parent_comment",
+        allow_empty=False,
+        allow_null=False,
+        required=False,
+    )
 
     class Meta:
         model = PollComment
@@ -58,6 +72,7 @@ class PollCommentCreateSerializer(serializers.ModelSerializer):
             "body",
             "likes",
             "poll_id",
+            "poll_comment_id",
         )
 
     def validate_body(self, body):
