@@ -41,6 +41,13 @@ class BlogPostComment(CommentMixin):
     blog_post = models.ForeignKey(
         "blog_posts.BlogPost", on_delete=models.CASCADE, related_name="comments"
     )
+    parent_comment = models.ForeignKey(
+        "blog_posts.BlogPostComment",
+        on_delete=models.CASCADE,
+        related_name="nested_comments",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return f"{self.author}: {self.short_body}"
