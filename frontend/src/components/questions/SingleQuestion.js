@@ -127,13 +127,12 @@ export const SingleQuestion = () => {
                       answerState={answerState}
                       setAnswerState={setAnswerState}
                     />
-                    {index !== answers?.length - 1 &&
-                      answer?.parent_answer_id === null && (
-                        <>
-                          <br></br>
-                          <hr></hr>
-                        </>
-                      )}
+                    {answer?.parent_answer_id === null && (
+                      <>
+                        <br></br>
+                        <hr></hr>
+                      </>
+                    )}
                   </>
                 );
               })}

@@ -38,7 +38,7 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ paddingBottom: "150px" }}>
       <div className="row mt-5">
         <div className="col-9 col-lg-4 bg-white m-auto px-5 py-3">
           <h2 className="text-center mt-3">Sign up now</h2>

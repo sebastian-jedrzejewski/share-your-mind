@@ -96,7 +96,7 @@ export const SinglePoll = () => {
                       comment?.parent_comment_id === null && (
                         <>
                           <br></br>
-                          <hr></hr>
+                          <hr style={{ borderTop: "2px dashed #a7727d" }}></hr>
                         </>
                       )}
                   </span>
