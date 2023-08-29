@@ -9,8 +9,9 @@
 # Virtual environments
 venv/
 
-# Local database
+# Local database and dump
 *.sqlite3
+db.json
 
 # dependencies
 /node_modules
