@@ -1,24 +1,15 @@
 # ShareYourMind
 A web application served as a portal to share knowledge by users. A project realized as an individual project at the Warsaw University of Technology.
 
-# Run instructions
-To run the entire project, it is necessary to run backend and frontend separately. 
-It is possible by running appropriate commands in Terminal (Linux or macOS) or Powershell (Windows).
-You need to have installed `python interpreter` and `node.js`
+# Overview
+To run the entire project, it is merely necessary to have `docker` and `docker-compose` installed.
+On Linux it can be done quite easily just by installing docker engine (https://docs.docker.com/engine/install/ubuntu/).
+On Windows and macOS docker desktop must be installed (https://docs.docker.com/desktop/). 
+You can run containers using commands in Terminal (Linux or macOS) or Powershell (Windows).
 
-## Backend
-Write these commands one by one to run backend:\
-`cd backend`\
-`pip install -r requirements.txt`\
-`python manage.py migrate`\
-`python manage.py runserver`
+## Run containers
+Write this command to set up the entire project:
+`docker-compose up -d`
 
 Backend will be available at: http://localhost:8000/
-
-## Frontend
-Write these commands one by one to run frontend:\
-`cd frontend`\
-`npm install`\
-`npm start`
-
 Frontend will be available at: http://localhost:3000/
